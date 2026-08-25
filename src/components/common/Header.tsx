@@ -21,26 +21,36 @@ import { playPopSound } from '../../utils/audio';
 
 interface HeaderProps {
   currentView: string;
-  onNavigate: (view: string, param?: string) => void;
-  onTriggerRandom: () => void;
+  onNavigateHome: () => void;
+  onNavigateCategories: () => void;
+  onNavigateCategory?: (slug: string) => void;
+  onNavigateQuizzes: () => void;
+  onNavigateArticles: () => void;
+  onNavigateAdmin: () => void;
   onOpenSearch: () => void;
   onOpenProfile: () => void;
   onOpenSubmit: () => void;
-  stats: UserStats;
+  onTriggerRandom: () => void;
+  userStats: UserStats;
   isDarkMode: boolean;
-  onToggleDarkMode: () => void;
+  onToggleTheme: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   currentView,
-  onNavigate,
-  onTriggerRandom,
+  onNavigateHome,
+  onNavigateCategories,
+  onNavigateCategory,
+  onNavigateQuizzes,
+  onNavigateArticles,
+  onNavigateAdmin,
   onOpenSearch,
   onOpenProfile,
   onOpenSubmit,
-  stats,
+  onTriggerRandom,
+  userStats,
   isDarkMode,
-  onToggleDarkMode
+  onToggleTheme
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [categoriesDropdownOpen, setCategoriesDropdownOpen] = useState(false);
@@ -52,9 +62,23 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   const handleNav = (view: string, param?: string) => {
-    onNavigate(view, param);
     setMobileMenuOpen(false);
     setCategoriesDropdownOpen(false);
+    if (view === 'home') {
+      onNavigateHome();
+    } else if (view === 'quizzes') {
+      onNavigateQuizzes();
+    } else if (view === 'artigos') {
+      onNavigateArticles();
+    } else if (view === 'admin') {
+      onNavigateAdmin();
+    } else if (view === 'categoria') {
+      if (param && onNavigateCategory) {
+        onNavigateCategory(param);
+      } else {
+        onNavigateCategories();
+      }
+    }
   };
 
   return (
@@ -207,19 +231,19 @@ export const Header: React.FC<HeaderProps> = ({
               title="Seu Perfil de Conhecimento e Favoritos"
             >
               <div className="w-6 h-6 rounded-lg bg-amber-500 text-white font-bold text-[11px] flex items-center justify-center">
-                {stats.level}
+                {userStats.level}
               </div>
               <div className="hidden sm:flex flex-col text-left">
                 <span className="text-[10px] font-bold text-neutral-800 dark:text-neutral-200 leading-tight">
-                  {stats.currentXp} XP
+                  {userStats.currentXp} XP
                 </span>
                 <span className="text-[9px] text-neutral-400 leading-tight">
-                  Nv. {stats.level}
+                  Nv. {userStats.level}
                 </span>
               </div>
               <div className="flex items-center text-amber-500 gap-0.5 ml-0.5">
                 <Flame className="w-3.5 h-3.5 fill-amber-500" />
-                <span className="text-[10px] font-extrabold">{stats.streakDays}</span>
+                <span className="text-[10px] font-extrabold">{userStats.streakDays}</span>
               </div>
             </button>
 
@@ -234,7 +258,7 @@ export const Header: React.FC<HeaderProps> = ({
 
             {/* Dark / Light Toggle */}
             <button
-              onClick={onToggleDarkMode}
+              onClick={onToggleTheme}
               className="p-2 rounded-xl text-neutral-500 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors"
               aria-label="Alternar tema escuro/claro"
             >

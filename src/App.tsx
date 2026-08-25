@@ -75,11 +75,12 @@ export default function App() {
   // Fetch updated curiosities from backend API on mount
   const fetchCuriosities = async () => {
     try {
-      const res = await fetch('/api/curiosidades');
+      const res = await fetch('/api/curiosidades?limit=100');
       if (res.ok) {
         const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) {
-          setCuriosities(data);
+        const items = Array.isArray(data) ? data : data.curiosidades;
+        if (Array.isArray(items) && items.length > 0) {
+          setCuriosities(items);
         }
       }
     } catch {
@@ -159,10 +160,12 @@ export default function App() {
     <div className="min-h-screen flex flex-col bg-neutral-50 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100 transition-colors duration-300 font-sans selection:bg-amber-500 selection:text-white">
       {/* Top Header */}
       <Header
+        currentView={currentView}
         onNavigateHome={navigateToHome}
         onNavigateCategories={() => {
           handleSelectCategory('ciencia');
         }}
+        onNavigateCategory={handleSelectCategory}
         onNavigateQuizzes={() => {
           setCurrentView('quiz-hub');
           window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -190,10 +193,10 @@ export default function App() {
           <div className="space-y-4">
             {/* Hero Section with Quick Categories and Interactive Quick-Facts */}
             <HeroSection
-              onSelectCategory={handleSelectCategory}
               onTriggerRandom={handleTriggerRandom}
               onOpenSearch={() => setIsSearchOpen(true)}
               onSelectCuriosity={handleSelectCuriosity}
+              featuredCuriosity={curiosities[0] || ALL_CURIOSITIES[0]}
             />
 
             {/* Daily Verified Curiosity Card */}
