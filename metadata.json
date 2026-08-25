@@ -1,0 +1,6 @@
+{
+  "name": "Mundo Curioso - Portal de Curiosidades do Mundo",
+  "description": "Uma enciclopédia moderna e interativa de fatos surpreendentes, quizzes, artigos e descobertas sobre ciência, história, espaço, natureza, Moçambique, África e o mundo.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
