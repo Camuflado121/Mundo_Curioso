@@ -8,11 +8,16 @@ import {
   ArrowRight,
   RotateCcw,
   HelpCircle,
-  Lightbulb
+  Lightbulb,
+  Share2,
+  Crown,
+  Flame,
+  X
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { Quiz } from '../../types';
-import { playSuccessChime, playWrongChime, playLevelUpFanfare } from '../../utils/audio';
+import { playSuccessChime, playWrongChime, playLevelUpFanfare, playPopSound } from '../../utils/audio';
+import { QuizPerfectScoreModal } from './QuizPerfectScoreModal';
 
 interface QuizPlayViewProps {
   quiz: Quiz;
@@ -32,6 +37,8 @@ export const QuizPlayView: React.FC<QuizPlayViewProps> = ({
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [hasConfirmed, setHasConfirmed] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
+  const [showPerfectScoreModal, setShowPerfectScoreModal] = useState(false);
+  const [showToast, setShowToast] = useState(false);
 
   const question = quiz.questions[currentQuestionIndex];
   const isLastQuestion = currentQuestionIndex === quiz.questions.length - 1;
@@ -69,10 +76,14 @@ export const QuizPlayView: React.FC<QuizPlayViewProps> = ({
         correct++;
       }
 
+      const isPerfect = correct === quiz.questions.length;
       const earnedXp = Math.round((correct / quiz.questions.length) * quiz.xpReward);
       onRecordCompleted(earnedXp);
 
-      if (correct >= quiz.questions.length / 2) {
+      if (isPerfect) {
+        setShowPerfectScoreModal(true);
+        setShowToast(true);
+      } else if (correct >= quiz.questions.length / 2) {
         playLevelUpFanfare();
         confetti({
           particleCount: 100,
@@ -95,6 +106,8 @@ export const QuizPlayView: React.FC<QuizPlayViewProps> = ({
     setSelectedOption(null);
     setHasConfirmed(false);
     setIsFinished(false);
+    setShowPerfectScoreModal(false);
+    setShowToast(false);
   };
 
   // Final Results Screen
@@ -106,22 +119,107 @@ export const QuizPlayView: React.FC<QuizPlayViewProps> = ({
       }
     });
 
+    const isPerfect = correctCount === quiz.questions.length;
     const scorePercentage = Math.round((correctCount / quiz.questions.length) * 100);
     const earnedXp = Math.round((correctCount / quiz.questions.length) * quiz.xpReward);
 
     return (
-      <div className="py-12 max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 animate-in zoom-in-95 duration-200">
-        <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-3xl p-8 sm:p-12 text-center shadow-2xl">
-          <div className="w-20 h-20 rounded-3xl bg-amber-500/10 text-amber-500 flex items-center justify-center mx-auto mb-6 shadow-inner">
+      <div className="py-12 max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 animate-in zoom-in-95 duration-200 relative">
+        {/* Floating Toast Notification on Top for Perfect Score */}
+        {isPerfect && showToast && (
+          <div
+            id="perfect-score-toast"
+            className="fixed top-20 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4 animate-in slide-in-from-top duration-300"
+          >
+            <div className="bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-white rounded-2xl p-3.5 shadow-2xl border border-amber-300/50 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+                  <Crown className="w-4 h-4 text-white" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-black leading-tight">
+                    Incrível! 100% de Acertos!
+                  </h4>
+                  <p className="text-[11px] text-amber-100 leading-tight">
+                    Você gabaritou o quiz. Desafie seus amigos!
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-1.5 shrink-0">
+                <button
+                  onClick={() => {
+                    playPopSound();
+                    setShowPerfectScoreModal(true);
+                  }}
+                  className="px-2.5 py-1.5 rounded-xl bg-white text-neutral-900 hover:bg-neutral-100 font-extrabold text-[11px] shadow-xs transition-transform active:scale-95"
+                >
+                  Compartilhar
+                </button>
+                <button
+                  onClick={() => setShowToast(false)}
+                  className="p-1 text-white/80 hover:text-white rounded-lg"
+                  aria-label="Fechar notificação"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-3xl p-8 sm:p-12 text-center shadow-2xl relative overflow-hidden">
+          {/* Top ambient glow for 100% */}
+          {isPerfect && (
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 -mt-10 w-48 h-20 bg-amber-500/20 rounded-full blur-2xl pointer-events-none" />
+          )}
+
+          <div className="w-20 h-20 rounded-3xl bg-amber-500/10 text-amber-500 flex items-center justify-center mx-auto mb-6 shadow-inner relative">
             <Trophy className="w-10 h-10 animate-bounce" />
+            {isPerfect && (
+              <span className="absolute -top-1 -right-1 p-1 bg-amber-500 text-black rounded-full shadow-md">
+                <Crown className="w-3.5 h-3.5" />
+              </span>
+            )}
           </div>
 
           <h2 className="text-2xl sm:text-3xl font-black font-serif text-neutral-950 dark:text-white mb-2">
-            Desafio Concluído!
+            {isPerfect ? 'Perfeito! Você Gabaritou!' : 'Desafio Concluído!'}
           </h2>
           <p className="text-xs sm:text-sm text-neutral-500 dark:text-neutral-400 mb-6">
             Você testou seus conhecimentos no quiz: <span className="font-bold text-neutral-900 dark:text-white">{quiz.title}</span>
           </p>
+
+          {/* Perfect Score Special Share Banner */}
+          {isPerfect && (
+            <div className="mb-6 p-4 rounded-2xl bg-gradient-to-r from-amber-500/15 via-orange-500/10 to-amber-500/15 border-2 border-amber-500/40 text-left flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-500 text-black flex items-center justify-center font-black text-sm shrink-0 shadow-md">
+                  100%
+                </div>
+                <div>
+                  <h4 className="text-xs font-black text-amber-900 dark:text-amber-300 flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                    Conquista Lendária Desbloqueada!
+                  </h4>
+                  <p className="text-[11px] text-neutral-600 dark:text-neutral-400">
+                    Você acertou todas as {quiz.questions.length} perguntas. Compartilhe e desafie seus amigos!
+                  </p>
+                </div>
+              </div>
+
+              <button
+                onClick={() => {
+                  playPopSound();
+                  setShowPerfectScoreModal(true);
+                }}
+                className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-extrabold text-xs shadow-md flex items-center justify-center gap-1.5 transition-transform active:scale-95 shrink-0"
+              >
+                <Share2 className="w-3.5 h-3.5" />
+                <span>Compartilhar Resultado</span>
+              </button>
+            </div>
+          )}
 
           {/* Score Box */}
           <div className="grid grid-cols-2 gap-4 p-5 rounded-2xl bg-neutral-50 dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-800 mb-8">
@@ -129,7 +227,7 @@ export const QuizPlayView: React.FC<QuizPlayViewProps> = ({
               <span className="text-[11px] uppercase font-bold text-neutral-400 block mb-1">
                 Pontuação
               </span>
-              <div className="text-2xl sm:text-3xl font-black text-neutral-900 dark:text-white">
+              <div className={`text-2xl sm:text-3xl font-black ${isPerfect ? 'text-emerald-500 dark:text-emerald-400' : 'text-neutral-900 dark:text-white'}`}>
                 {correctCount} / {quiz.questions.length}
               </div>
               <span className="text-xs text-neutral-500 font-medium">
@@ -186,6 +284,18 @@ export const QuizPlayView: React.FC<QuizPlayViewProps> = ({
 
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            {isPerfect && (
+              <button
+                onClick={() => {
+                  playPopSound();
+                  setShowPerfectScoreModal(true);
+                }}
+                className="px-6 py-3 rounded-2xl bg-amber-500 hover:bg-amber-600 text-black font-extrabold text-xs flex items-center justify-center gap-2 shadow-md transition-all active:scale-95"
+              >
+                <Share2 className="w-4 h-4" /> Compartilhar Conquista (100%)
+              </button>
+            )}
+
             <button
               onClick={handleRestart}
               className="px-6 py-3 rounded-2xl bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-800 dark:text-neutral-200 text-xs font-bold flex items-center justify-center gap-2 transition-colors"
@@ -201,6 +311,15 @@ export const QuizPlayView: React.FC<QuizPlayViewProps> = ({
             </button>
           </div>
         </div>
+
+        {/* Modal de Pontuação Máxima Informativa e de Compartilhamento */}
+        <QuizPerfectScoreModal
+          isOpen={showPerfectScoreModal}
+          onClose={() => setShowPerfectScoreModal(false)}
+          quiz={quiz}
+          earnedXp={earnedXp}
+          totalQuestions={quiz.questions.length}
+        />
       </div>
     );
   }

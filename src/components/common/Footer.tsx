@@ -7,9 +7,17 @@ interface FooterProps {
   onNavigate: (view: string, param?: string) => void;
   onTriggerRandom: () => void;
   onOpenSubmit: () => void;
+  isAdmin?: boolean;
+  onOpenAdminLogin?: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onNavigate, onTriggerRandom, onOpenSubmit }) => {
+export const Footer: React.FC<FooterProps> = ({
+  onNavigate,
+  onTriggerRandom,
+  onOpenSubmit,
+  isAdmin = false,
+  onOpenAdminLogin
+}) => {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -195,9 +203,30 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onTriggerRandom, onO
         {/* Bottom copyright & attribution */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-neutral-500">
           <p>© {new Date().getFullYear()} Mundo Curioso. Todos os direitos reservados.</p>
-          <p className="flex items-center gap-1">
-            Feito com <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500" /> para os apaixonados por conhecimento ao redor do mundo.
-          </p>
+          <div className="flex items-center gap-4">
+            <p className="flex items-center gap-1">
+              Feito com <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500" /> para os apaixonados por conhecimento ao redor do mundo.
+            </p>
+            {isAdmin ? (
+              <button
+                onClick={() => onNavigate('admin')}
+                className="text-amber-500 hover:text-amber-400 font-semibold transition-colors flex items-center gap-1"
+                title="Acessar Painel de Controle"
+              >
+                👑 Painel Admin (Conectado)
+              </button>
+            ) : (
+              onOpenAdminLogin && (
+                <button
+                  onClick={onOpenAdminLogin}
+                  className="text-neutral-600 hover:text-neutral-400 transition-colors flex items-center gap-1"
+                  title="Acesso exclusivo para o administrador"
+                >
+                  <Shield className="w-3 h-3" /> Área do Administrador
+                </button>
+              )
+            )}
+          </div>
         </div>
       </div>
     </footer>

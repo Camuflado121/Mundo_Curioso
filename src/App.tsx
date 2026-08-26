@@ -18,6 +18,7 @@ import { ShareModal } from './components/common/ShareModal';
 
 import { HeroSection } from './components/home/HeroSection';
 import { DailyCuriositySection } from './components/home/DailyCuriositySection';
+import { AiFactGeneratorSection } from './components/home/AiFactGeneratorSection';
 import { DiscoveryRoute } from './components/home/DiscoveryRoute';
 import { CategoriesGrid } from './components/home/CategoriesGrid';
 import { FeaturedGrid } from './components/home/FeaturedGrid';
@@ -33,8 +34,12 @@ import { ArticleDetailView } from './components/articles/ArticleDetailView';
 import { AdminDashboard } from './components/admin/AdminDashboard';
 import { AboutPage, ContactPage, PrivacyPage } from './components/pages/StaticPages';
 import { NotFoundPage } from './components/pages/NotFoundPage';
+import { AiAssistantModal } from './components/common/AiAssistantModal';
 
 import { playPopSound, playLevelUpFanfare } from './utils/audio';
+import { useAdminAuth } from './hooks/useAdminAuth';
+import { AdminLoginModal } from './components/admin/AdminLoginModal';
+import { ShieldAlert, Lock, ArrowLeft, Sparkles, MessageSquare } from 'lucide-react';
 
 type ViewMode =
   | 'home'
@@ -62,12 +67,17 @@ export default function App() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isSubmitOpen, setIsSubmitOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isAiAssistantOpen, setIsAiAssistantOpen] = useState(false);
   const [shareCuriosity, setShareCuriosity] = useState<Curiosity | null>(null);
 
   // Dark/Light Theme state
   const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
     return localStorage.getItem('mundo_curioso_theme') === 'dark';
   });
+
+  // Admin Authentication hook & modal state
+  const { isAdmin, adminUser, token, login, logout } = useAdminAuth();
+  const [isAdminLoginOpen, setIsAdminLoginOpen] = useState(false);
 
   // User Stats / Gamification hook
   const { stats, addXp, toggleFavorite, isFavorite, recordQuizCompleted } = useUserStats();
@@ -175,16 +185,22 @@ export default function App() {
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
         onNavigateAdmin={() => {
-          setCurrentView('admin');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+          if (isAdmin) {
+            setCurrentView('admin');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          } else {
+            setIsAdminLoginOpen(true);
+          }
         }}
         onOpenSearch={() => setIsSearchOpen(true)}
         onOpenSubmit={() => setIsSubmitOpen(true)}
         onOpenProfile={() => setIsProfileOpen(true)}
+        onOpenAiAssistant={() => setIsAiAssistantOpen(true)}
         onTriggerRandom={handleTriggerRandom}
         userStats={stats}
         isDarkMode={isDarkMode}
         onToggleTheme={toggleTheme}
+        isAdmin={isAdmin}
       />
 
       {/* Main Dynamic View Outlet */}
@@ -206,6 +222,15 @@ export default function App() {
               onOpenShare={item => setShareCuriosity(item)}
               onToggleFavorite={toggleFavorite}
               isFavorite={isFavorite}
+            />
+
+            {/* Automatic Verified Fact Generator with Gemini AI */}
+            <AiFactGeneratorSection
+              onSelectCuriosity={handleSelectCuriosity}
+              onOpenShare={item => setShareCuriosity(item)}
+              onToggleFavorite={toggleFavorite}
+              isFavorite={isFavorite}
+              onAddXp={addXp}
             />
 
             {/* Discovery Route: Interconnected Fact Trails */}
@@ -252,6 +277,9 @@ export default function App() {
             onToggleFavorite={toggleFavorite}
             isFavorite={isFavorite}
             onTriggerRandom={handleTriggerRandom}
+            isAdmin={isAdmin}
+            token={token}
+            adminName={adminUser?.name}
           />
         )}
 
@@ -301,14 +329,51 @@ export default function App() {
           <ArticleDetailView
             article={selectedArticle}
             onBack={() => setCurrentView('articles-list')}
+            isAdmin={isAdmin}
+            token={token}
+            adminName={adminUser?.name}
           />
         )}
 
         {currentView === 'admin' && (
-          <AdminDashboard
-            onBack={navigateToHome}
-            onRefreshCuriosities={fetchCuriosities}
-          />
+          isAdmin ? (
+            <AdminDashboard
+              onBack={navigateToHome}
+              onRefreshCuriosities={fetchCuriosities}
+              token={token}
+              adminUser={adminUser}
+              onLogout={() => {
+                logout();
+                navigateToHome();
+              }}
+            />
+          ) : (
+            <div className="py-24 max-w-md mx-auto px-4 text-center animate-in fade-in">
+              <div className="w-16 h-16 rounded-3xl bg-amber-500/10 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30 flex items-center justify-center mx-auto mb-5">
+                <ShieldAlert className="w-8 h-8" />
+              </div>
+              <h2 className="text-2xl font-black font-serif text-neutral-900 dark:text-white mb-2">
+                Acesso Restrito ao Administrador
+              </h2>
+              <p className="text-xs text-neutral-600 dark:text-neutral-400 mb-6 leading-relaxed">
+                Este painel de administração e moderação é de acesso exclusivo do administrador. Os visitantes possuem acesso apenas ao conteúdo público do portal.
+              </p>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                <button
+                  onClick={navigateToHome}
+                  className="w-full sm:w-auto px-5 py-2.5 rounded-2xl bg-neutral-100 dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 text-xs font-bold hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors flex items-center justify-center gap-2"
+                >
+                  <ArrowLeft className="w-4 h-4" /> Voltar ao Início
+                </button>
+                <button
+                  onClick={() => setIsAdminLoginOpen(true)}
+                  className="w-full sm:w-auto px-5 py-2.5 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-600 text-white text-xs font-bold shadow-md hover:from-amber-600 hover:to-orange-700 transition-all flex items-center justify-center gap-2"
+                >
+                  <Lock className="w-4 h-4" /> Fazer Login de Admin
+                </button>
+              </div>
+            </div>
+          )
         )}
 
         {currentView === 'about' && (
@@ -342,18 +407,79 @@ export default function App() {
 
       {/* Global Footer */}
       <Footer
-        onNavigateHome={navigateToHome}
-        onNavigateCategory={handleSelectCategory}
-        onNavigateQuizzes={() => setCurrentView('quiz-hub')}
-        onNavigateArticles={() => setCurrentView('articles-list')}
-        onNavigateAdmin={() => setCurrentView('admin')}
-        onNavigateAbout={() => setCurrentView('about')}
-        onNavigateContact={() => setCurrentView('contact')}
-        onNavigatePrivacy={() => setCurrentView('privacy')}
+        onNavigate={(view: string, param?: string) => {
+          if (view === 'home') navigateToHome();
+          else if (view === 'categoria' && param) handleSelectCategory(param);
+          else if (view === 'quizzes') {
+            setCurrentView('quiz-hub');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          } else if (view === 'artigos') {
+            setCurrentView('articles-list');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          } else if (view === 'admin') {
+            if (isAdmin) {
+              setCurrentView('admin');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+              setIsAdminLoginOpen(true);
+            }
+          } else if (view === 'sobre') {
+            setCurrentView('about');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          } else if (view === 'contato') {
+            setCurrentView('contact');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          } else if (view === 'privacidade') {
+            setCurrentView('privacy');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        }}
+        onTriggerRandom={handleTriggerRandom}
         onOpenSubmit={() => setIsSubmitOpen(true)}
+        isAdmin={isAdmin}
+        onOpenAdminLogin={() => setIsAdminLoginOpen(true)}
       />
 
+      {/* Floating AI Curiosity Assistant Trigger Button */}
+      <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-2">
+        <button
+          id="floating-ai-assistant-btn"
+          onClick={() => {
+            playPopSound();
+            setIsAiAssistantOpen(true);
+          }}
+          className="group relative flex items-center gap-2.5 px-4 py-3 rounded-full bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-700 text-white font-black text-xs shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 border border-amber-300/40"
+          title="Abrir Assistente de Curiosidades Gemini IA"
+        >
+          <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-amber-300"></span>
+          </span>
+
+          <Sparkles className="w-4 h-4 animate-spin-slow" />
+          <span className="tracking-wide">Oráculo IA</span>
+          <span className="hidden sm:inline-block text-[9px] px-1.5 py-0.5 rounded-full bg-black/20 font-mono font-normal">
+            Gemini 3.7
+          </span>
+        </button>
+      </div>
+
       {/* Global Modals */}
+      <AiAssistantModal
+        isOpen={isAiAssistantOpen}
+        onClose={() => setIsAiAssistantOpen(false)}
+        onAddXp={addXp}
+      />
+
+      <AdminLoginModal
+        isOpen={isAdminLoginOpen}
+        onClose={() => setIsAdminLoginOpen(false)}
+        onLogin={login}
+        onLoginSuccess={() => {
+          setCurrentView('admin');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+      />
       <SearchModal
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}

@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base {
   body {
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
@@ -9,6 +11,7 @@
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 }
+
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {

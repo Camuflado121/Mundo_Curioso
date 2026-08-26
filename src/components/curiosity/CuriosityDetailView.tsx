@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   ArrowLeft,
   Calendar,
@@ -10,8 +10,6 @@ import {
   Sparkles,
   ExternalLink,
   ShieldCheck,
-  MessageSquare,
-  Send,
   Dice5,
   ArrowRight,
   ThumbsUp,
@@ -20,10 +18,11 @@ import {
   Flame,
   CheckCircle2
 } from 'lucide-react';
-import { Curiosity, Comment } from '../../types';
+import { Curiosity } from '../../types';
 import { getRelatedCuriosities } from '../../data/allCuriosities';
 import { AdBanner } from '../common/AdBanner';
-import { playPopSound, playSuccessChime } from '../../utils/audio';
+import { playPopSound } from '../../utils/audio';
+import { CommentsSection } from '../common/CommentsSection';
 
 interface CuriosityDetailViewProps {
   curiosity: Curiosity;
@@ -33,6 +32,9 @@ interface CuriosityDetailViewProps {
   onToggleFavorite: (slug: string) => void;
   isFavorite: (slug: string) => boolean;
   onTriggerRandom: () => void;
+  isAdmin?: boolean;
+  token?: string | null;
+  adminName?: string;
 }
 
 export const CuriosityDetailView: React.FC<CuriosityDetailViewProps> = ({
@@ -42,32 +44,17 @@ export const CuriosityDetailView: React.FC<CuriosityDetailViewProps> = ({
   onOpenShare,
   onToggleFavorite,
   isFavorite,
-  onTriggerRandom
+  onTriggerRandom,
+  isAdmin = false,
+  token,
+  adminName
 }) => {
   const [likesCount, setLikesCount] = useState(curiosity.likes);
   const [hasLiked, setHasLiked] = useState(false);
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [newCommentName, setNewCommentName] = useState('');
-  const [newCommentText, setNewCommentText] = useState('');
-  const [isSubmittingComment, setIsSubmittingComment] = useState(false);
   const [selectedReaction, setSelectedReaction] = useState<string | null>(null);
 
   const related = getRelatedCuriosities(curiosity, 3);
   const isFav = isFavorite(curiosity.slug);
-
-  // Fetch comments for this curiosity
-  useEffect(() => {
-    fetch(`/api/comentarios/${curiosity.id}`)
-      .then(res => res.json())
-      .then(data => {
-        if (Array.isArray(data)) {
-          setComments(data);
-        }
-      })
-      .catch(() => {
-        // Fallback demo comments if needed
-      });
-  }, [curiosity.id]);
 
   const handleLike = async () => {
     if (hasLiked) return;
@@ -91,47 +78,6 @@ export const CuriosityDetailView: React.FC<CuriosityDetailViewProps> = ({
     setSelectedReaction(reaction);
     if (!hasLiked) {
       handleLike();
-    }
-  };
-
-  const handleAddComment = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newCommentName.trim() || !newCommentText.trim()) return;
-
-    setIsSubmittingComment(true);
-    try {
-      const res = await fetch('/api/comentarios', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          curiosityId: curiosity.id,
-          authorName: newCommentName,
-          content: newCommentText
-        })
-      });
-
-      if (res.ok) {
-        const savedComment = await res.json();
-        setComments(prev => [savedComment, ...prev]);
-        setNewCommentText('');
-        playSuccessChime();
-      }
-    } catch {
-      // Local fallback
-      const mockComment: Comment = {
-        id: 'c-' + Date.now(),
-        curiosityId: curiosity.id,
-        authorName: newCommentName,
-        authorAvatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80',
-        content: newCommentText,
-        createdAt: new Date().toISOString(),
-        likes: 0
-      };
-      setComments(prev => [mockComment, ...prev]);
-      setNewCommentText('');
-      playSuccessChime();
-    } finally {
-      setIsSubmittingComment(false);
     }
   };
 
@@ -316,78 +262,14 @@ export const CuriosityDetailView: React.FC<CuriosityDetailViewProps> = ({
       {/* Ad slot inside article */}
       <AdBanner slot="article-footer" />
 
-      {/* Community Comments Section */}
-      <section className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-3xl p-6 sm:p-8 shadow-md mb-12">
-        <div className="flex items-center gap-2 mb-6">
-          <MessageSquare className="w-5 h-5 text-amber-500" />
-          <h3 className="text-lg font-bold text-neutral-950 dark:text-white">
-            Comentários da Comunidade ({comments.length})
-          </h3>
-        </div>
-
-        {/* Add Comment Form */}
-        <form onSubmit={handleAddComment} className="mb-8 space-y-3">
-          <input
-            type="text"
-            required
-            placeholder="Seu nome ou apelido"
-            value={newCommentName}
-            onChange={e => setNewCommentName(e.target.value)}
-            className="w-full px-4 py-2.5 rounded-xl bg-neutral-50 dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-700 text-xs text-neutral-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-amber-500"
-          />
-          <textarea
-            required
-            rows={3}
-            placeholder="O que você achou dessa curiosidade? Deixe sua reflexão..."
-            value={newCommentText}
-            onChange={e => setNewCommentText(e.target.value)}
-            className="w-full px-4 py-2.5 rounded-xl bg-neutral-50 dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-700 text-xs text-neutral-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-amber-500 resize-none"
-          />
-          <button
-            type="submit"
-            disabled={isSubmittingComment}
-            className="px-5 py-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-100 text-xs font-semibold flex items-center gap-1.5 transition-colors disabled:opacity-50"
-          >
-            <Send className="w-3.5 h-3.5" /> Publicar Comentário
-          </button>
-        </form>
-
-        {/* Comments List */}
-        <div className="space-y-4">
-          {comments.length === 0 ? (
-            <p className="text-xs text-neutral-400 text-center py-4">
-              Seja a primeira pessoa a comentar sobre essa descoberta!
-            </p>
-          ) : (
-            comments.map(c => (
-              <div
-                key={c.id}
-                className="p-4 rounded-2xl bg-neutral-50 dark:bg-neutral-950 border border-neutral-100 dark:border-neutral-800/80 flex items-start gap-3"
-              >
-                <img
-                  src={c.authorAvatar}
-                  alt={c.authorName}
-                  className="w-9 h-9 rounded-full object-cover shrink-0"
-                  referrerPolicy="no-referrer"
-                />
-                <div className="grow">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-bold text-neutral-900 dark:text-white">
-                      {c.authorName}
-                    </span>
-                    <span className="text-[10px] text-neutral-400">
-                      {new Date(c.createdAt).toLocaleDateString()}
-                    </span>
-                  </div>
-                  <p className="text-xs text-neutral-600 dark:text-neutral-300 leading-relaxed">
-                    {c.content}
-                  </p>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-      </section>
+      {/* Interactive Community Comments & Debate Section */}
+      <CommentsSection
+        targetId={curiosity.id}
+        targetTitle={curiosity.title}
+        isAdmin={isAdmin}
+        adminName={adminName}
+        token={token}
+      />
 
       {/* Related Curiosities: "O que explorar a seguir?" */}
       <section className="mb-12">

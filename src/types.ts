@@ -77,14 +77,51 @@ export interface SpecialArticle {
   tags: string[];
 }
 
+export interface CommentReply {
+  id: string;
+  authorName: string;
+  authorAvatar: string;
+  content: string;
+  createdAt: string;
+  isAdmin?: boolean;
+  likes?: number;
+}
+
 export interface Comment {
   id: string;
   curiosityId: string;
+  curiosityTitle?: string;
   authorName: string;
   authorAvatar: string;
   content: string;
   createdAt: string;
   likes: number;
+  isAdmin?: boolean;
+  isPinned?: boolean;
+  replies?: CommentReply[];
+}
+
+export interface AiDailyStatus {
+  autoUpdateEnabled: boolean;
+  lastRunDate: string;
+  nextRunEstimated: string;
+  totalAiGenerated: number;
+  preferredCategories: string[];
+  recentGenerations: {
+    id: string;
+    title: string;
+    categoryName: string;
+    date: string;
+    isDaily: boolean;
+  }[];
+}
+
+export interface AdminAuditLog {
+  id: string;
+  action: string;
+  details: string;
+  timestamp: string;
+  adminEmail: string;
 }
 
 export interface UserStats {

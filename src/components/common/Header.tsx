@@ -31,9 +31,11 @@ interface HeaderProps {
   onOpenProfile: () => void;
   onOpenSubmit: () => void;
   onTriggerRandom: () => void;
+  onOpenAiAssistant?: () => void;
   userStats: UserStats;
   isDarkMode: boolean;
   onToggleTheme: () => void;
+  isAdmin?: boolean;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -48,9 +50,11 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenProfile,
   onOpenSubmit,
   onTriggerRandom,
+  onOpenAiAssistant,
   userStats,
   isDarkMode,
-  onToggleTheme
+  onToggleTheme,
+  isAdmin = false
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [categoriesDropdownOpen, setCategoriesDropdownOpen] = useState(false);
@@ -185,18 +189,36 @@ export const Header: React.FC<HeaderProps> = ({
               Especiais
             </button>
 
-            <button
-              onClick={() => handleNav('admin')}
-              className={`flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-semibold transition-colors ${
-                currentView === 'admin'
-                  ? 'bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-white'
-                  : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'
-              }`}
-              title="Painel de Redação & IA"
-            >
-              <LayoutDashboard className="w-3.5 h-3.5" />
-              Admin
-            </button>
+            {/* AI Assistant Quick Nav */}
+            {onOpenAiAssistant && (
+              <button
+                onClick={() => {
+                  playPopSound();
+                  onOpenAiAssistant();
+                }}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/25 transition-all shadow-2xs group"
+                title="Abrir Assistente de Curiosidades com Gemini AI"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-amber-500 animate-pulse group-hover:rotate-12 transition-transform" />
+                <span>Oráculo IA</span>
+              </button>
+            )}
+
+            {/* Exclusive Admin Button (Visible only to authenticated Admin) */}
+            {isAdmin && (
+              <button
+                onClick={() => handleNav('admin')}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-colors ${
+                  currentView === 'admin'
+                    ? 'bg-amber-500 text-white shadow-sm'
+                    : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 border border-amber-500/30'
+                }`}
+                title="Painel Exclusivo de Administração & IA"
+              >
+                <LayoutDashboard className="w-3.5 h-3.5" />
+                <span>Admin</span>
+              </button>
+            )}
           </nav>
 
           {/* Action Hub (Search, Surprise Me, User Gamification, Dark Mode) */}
@@ -299,12 +321,26 @@ export const Header: React.FC<HeaderProps> = ({
             >
               <BookOpen className="w-3.5 h-3.5 text-blue-500" /> Especiais
             </button>
-            <button
-              onClick={() => handleNav('admin')}
-              className="p-2.5 rounded-xl bg-neutral-100 dark:bg-neutral-900 text-xs font-semibold text-neutral-900 dark:text-white text-left flex items-center gap-1.5"
-            >
-              <LayoutDashboard className="w-3.5 h-3.5" /> Painel Admin
-            </button>
+            {onOpenAiAssistant && (
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  playPopSound();
+                  onOpenAiAssistant();
+                }}
+                className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs font-bold text-amber-600 dark:text-amber-400 text-left flex items-center gap-1.5"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-amber-500 animate-pulse" /> Oráculo IA
+              </button>
+            )}
+            {isAdmin && (
+              <button
+                onClick={() => handleNav('admin')}
+                className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs font-bold text-amber-600 dark:text-amber-400 text-left flex items-center gap-1.5"
+              >
+                <LayoutDashboard className="w-3.5 h-3.5" /> Painel Admin
+              </button>
+            )}
           </div>
 
           <div className="pt-2 border-t border-neutral-100 dark:border-neutral-900">

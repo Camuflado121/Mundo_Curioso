@@ -2,13 +2,23 @@ import React from 'react';
 import { ArrowLeft, Calendar, Clock, Eye, ShieldCheck, Share2, BookOpen } from 'lucide-react';
 import { SpecialArticle } from '../../types';
 import { AdBanner } from '../common/AdBanner';
+import { CommentsSection } from '../common/CommentsSection';
 
 interface ArticleDetailViewProps {
   article: SpecialArticle;
   onBack: () => void;
+  isAdmin?: boolean;
+  token?: string | null;
+  adminName?: string;
 }
 
-export const ArticleDetailView: React.FC<ArticleDetailViewProps> = ({ article, onBack }) => {
+export const ArticleDetailView: React.FC<ArticleDetailViewProps> = ({
+  article,
+  onBack,
+  isAdmin = false,
+  token,
+  adminName
+}) => {
   return (
     <div className="py-8 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 animate-in fade-in duration-300">
       <button
@@ -18,7 +28,7 @@ export const ArticleDetailView: React.FC<ArticleDetailViewProps> = ({ article, o
         <ArrowLeft className="w-4 h-4" /> Voltar aos Dossiês
       </button>
 
-      <article className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-3xl p-6 sm:p-12 shadow-xl mb-12">
+      <article className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-3xl p-6 sm:p-12 shadow-xl mb-8">
         <div className="flex items-center gap-2 mb-4">
           <span className="px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-xs font-black uppercase tracking-wider">
             Dossiê de Pesquisa
@@ -66,6 +76,15 @@ export const ArticleDetailView: React.FC<ArticleDetailViewProps> = ({ article, o
           ))}
         </div>
       </article>
+
+      {/* Interactive Comments */}
+      <CommentsSection
+        targetId={article.id}
+        targetTitle={article.title}
+        isAdmin={isAdmin}
+        adminName={adminName}
+        token={token}
+      />
 
       <AdBanner slot="article-footer" />
     </div>
