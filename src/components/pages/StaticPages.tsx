@@ -4,10 +4,11 @@ import { playSuccessChime } from '../../utils/audio';
 
 interface StaticPageProps {
   onBack: () => void;
-  onOpenSubmit: () => void;
+  onOpenSubmit?: () => void;
+  isAdmin?: boolean;
 }
 
-export const AboutPage: React.FC<StaticPageProps> = ({ onBack, onOpenSubmit }) => {
+export const AboutPage: React.FC<StaticPageProps> = ({ onBack, onOpenSubmit, isAdmin = false }) => {
   return (
     <div className="py-8 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 animate-in fade-in duration-300">
       <button
@@ -47,17 +48,21 @@ export const AboutPage: React.FC<StaticPageProps> = ({ onBack, onOpenSubmit }) =
 
           <div className="p-6 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/40 my-8">
             <h4 className="text-base font-bold text-neutral-900 dark:text-white mb-2 flex items-center gap-2">
-              <Globe2 className="w-5 h-5 text-amber-500" /> Tem uma curiosidade para compartilhar?
+              <Globe2 className="w-5 h-5 text-amber-500" /> Curadoria & Publicação Editorial Exclusiva
             </h4>
-            <p className="text-xs text-neutral-600 dark:text-neutral-300 mb-4">
-              Nossa comunidade é aberta a pesquisadores, estudantes e leitores apaixonados. Envie sua sugestão e ganhe destaque nos créditos da plataforma.
+            <p className="text-xs text-neutral-600 dark:text-neutral-300 mb-2">
+              Todas as curiosidades e artigos são rigorosamente pesquisados, escritos e publicados exclusivamente pela redação e administração do portal para garantir total precisão e veracidade dos dados. Os leitores podem explorar todo o acervo e participar ativamente através dos debates e comentários.
             </p>
-            <button
-              onClick={onOpenSubmit}
-              className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-sm transition-colors"
-            >
-              Enviar Sugestão
-            </button>
+            {isAdmin && onOpenSubmit && (
+              <div className="pt-2">
+                <button
+                  onClick={onOpenSubmit}
+                  className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-sm transition-colors"
+                >
+                  Publicar Curiosidade (Admin)
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

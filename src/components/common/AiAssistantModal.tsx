@@ -24,6 +24,7 @@ interface AiAssistantModalProps {
   onClose: () => void;
   onSelectCuriosityTopic?: (topic: string) => void;
   onAddXp?: (xp: number, reason: string) => void;
+  token?: string | null;
 }
 
 interface Message {
@@ -49,7 +50,8 @@ const PRESET_QUESTIONS = [
 export const AiAssistantModal: React.FC<AiAssistantModalProps> = ({
   isOpen,
   onClose,
-  onAddXp
+  onAddXp,
+  token
 }) => {
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -107,7 +109,10 @@ export const AiAssistantModal: React.FC<AiAssistantModalProps> = ({
     try {
       const res = await fetch('/api/ai/assistente', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'x-admin-token': token } : {})
+        },
         body: JSON.stringify({ question: query })
       });
 

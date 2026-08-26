@@ -176,11 +176,13 @@ export const Footer: React.FC<FooterProps> = ({
                   Artigos Especiais
                 </button>
               </li>
-              <li>
-                <button onClick={onOpenSubmit} className="hover:text-amber-400 transition-colors text-left text-amber-400 font-semibold">
-                  + Enviar Curiosidade
-                </button>
-              </li>
+              {isAdmin && (
+                <li>
+                  <button onClick={onOpenSubmit} className="hover:text-amber-400 transition-colors text-left text-amber-400 font-semibold">
+                    + Publicar Curiosidade (Admin)
+                  </button>
+                </li>
+              )}
               <li>
                 <button onClick={() => onNavigate('sobre')} className="hover:text-amber-400 transition-colors text-left">
                   Sobre Nós

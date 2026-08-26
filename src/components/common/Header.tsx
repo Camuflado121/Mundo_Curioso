@@ -189,15 +189,15 @@ export const Header: React.FC<HeaderProps> = ({
               Especiais
             </button>
 
-            {/* AI Assistant Quick Nav */}
-            {onOpenAiAssistant && (
+            {/* AI Assistant Quick Nav (Exclusive for Administrator) */}
+            {isAdmin && onOpenAiAssistant && (
               <button
                 onClick={() => {
                   playPopSound();
                   onOpenAiAssistant();
                 }}
                 className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/25 transition-all shadow-2xs group"
-                title="Abrir Assistente de Curiosidades com Gemini AI"
+                title="Abrir Assistente Oráculo IA com Gemini 3.7 (Administrador)"
               >
                 <Sparkles className="w-3.5 h-3.5 text-amber-500 animate-pulse group-hover:rotate-12 transition-transform" />
                 <span>Oráculo IA</span>
@@ -269,14 +269,16 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
             </button>
 
-            {/* Envie Fato Modal Trigger (Desktop) */}
-            <button
-              onClick={onOpenSubmit}
-              className="hidden md:flex p-2 rounded-xl text-neutral-500 hover:text-amber-500 hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors"
-              title="Enviar uma Curiosidade"
-            >
-              <PlusCircle className="w-4 h-4" />
-            </button>
+            {/* Publicar Curiosidade (Visible Exclusively to Admin) */}
+            {isAdmin && (
+              <button
+                onClick={onOpenSubmit}
+                className="hidden md:flex p-2 rounded-xl text-amber-600 dark:text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 transition-colors"
+                title="Publicar Nova Curiosidade (Admin)"
+              >
+                <PlusCircle className="w-4 h-4" />
+              </button>
+            )}
 
             {/* Dark / Light Toggle */}
             <button
@@ -321,7 +323,7 @@ export const Header: React.FC<HeaderProps> = ({
             >
               <BookOpen className="w-3.5 h-3.5 text-blue-500" /> Especiais
             </button>
-            {onOpenAiAssistant && (
+            {isAdmin && onOpenAiAssistant && (
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
@@ -361,17 +363,19 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
           </div>
 
-          <div className="pt-2">
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                onOpenSubmit();
-              }}
-              className="w-full py-2.5 px-4 rounded-xl bg-neutral-100 dark:bg-neutral-900 text-neutral-800 dark:text-neutral-200 text-xs font-semibold flex items-center justify-center gap-1.5"
-            >
-              <PlusCircle className="w-4 h-4 text-amber-500" /> Enviar uma Curiosidade
-            </button>
-          </div>
+          {isAdmin && (
+            <div className="pt-2">
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenSubmit();
+                }}
+                className="w-full py-2.5 px-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 text-xs font-bold flex items-center justify-center gap-1.5"
+              >
+                <PlusCircle className="w-4 h-4 text-amber-500" /> Publicar Nova Curiosidade
+              </button>
+            </div>
+          )}
         </div>
       )}
     </header>

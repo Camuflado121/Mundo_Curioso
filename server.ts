@@ -983,8 +983,8 @@ async function startServer() {
     });
   });
 
-  // 15. AI Gemini Assistant & Verified Fact Generator Endpoints
-  app.post('/api/ai/assistente', async (req, res) => {
+  // 15. AI Gemini Assistant & Verified Fact Generator Endpoints (Admin Only)
+  app.post('/api/ai/assistente', requireAdminAuth, async (req, res) => {
     const { question } = req.body as { question?: string };
     if (!question || !question.trim()) {
       return res.status(400).json({ error: 'A pergunta é obrigatória' });
@@ -1008,14 +1008,14 @@ async function startServer() {
     }
   });
 
-  // Public Verified Fact Generator with Gemini
-  app.post('/api/ai/gerar-fato-publico', async (req, res) => {
+  // Verified Fact Generator with Gemini (Admin Only)
+  app.post('/api/ai/gerar-fato-publico', requireAdminAuth, async (req, res) => {
     const { topic, category } = req.body as { topic?: string; category?: string };
     try {
       const curiosity = await generateSingleCuriosityAi(topic, category || 'ciencia');
       res.json({ success: true, curiosity });
     } catch (err) {
-      console.error('Error in public fact generator:', err);
+      console.error('Error in fact generator:', err);
       const picked = FALLBACK_TOPICS_POOL[Math.floor(Math.random() * FALLBACK_TOPICS_POOL.length)];
       res.json({ success: true, curiosity: picked });
     }
@@ -1058,7 +1058,7 @@ async function startServer() {
     }
   });
 
-  app.post('/api/ai/gerar-curiosidade', async (req, res) => {
+  app.post('/api/ai/gerar-curiosidade', requireAdminAuth, async (req, res) => {
     const { topic, category } = req.body as { topic?: string; category?: string };
     try {
       const curiosity = await generateSingleCuriosityAi(topic, category || 'ciencia');

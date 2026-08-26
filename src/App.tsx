@@ -193,9 +193,20 @@ export default function App() {
           }
         }}
         onOpenSearch={() => setIsSearchOpen(true)}
-        onOpenSubmit={() => setIsSubmitOpen(true)}
+        onOpenSubmit={() => {
+          if (isAdmin) {
+            setCurrentView('admin');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          } else {
+            setIsAdminLoginOpen(true);
+          }
+        }}
         onOpenProfile={() => setIsProfileOpen(true)}
-        onOpenAiAssistant={() => setIsAiAssistantOpen(true)}
+        onOpenAiAssistant={() => {
+          if (isAdmin) {
+            setIsAiAssistantOpen(true);
+          }
+        }}
         onTriggerRandom={handleTriggerRandom}
         userStats={stats}
         isDarkMode={isDarkMode}
@@ -224,14 +235,17 @@ export default function App() {
               isFavorite={isFavorite}
             />
 
-            {/* Automatic Verified Fact Generator with Gemini AI */}
-            <AiFactGeneratorSection
-              onSelectCuriosity={handleSelectCuriosity}
-              onOpenShare={item => setShareCuriosity(item)}
-              onToggleFavorite={toggleFavorite}
-              isFavorite={isFavorite}
-              onAddXp={addXp}
-            />
+            {/* Automatic Verified Fact Generator with Gemini AI (Exclusive for Admin) */}
+            {isAdmin && (
+              <AiFactGeneratorSection
+                onSelectCuriosity={handleSelectCuriosity}
+                onOpenShare={item => setShareCuriosity(item)}
+                onToggleFavorite={toggleFavorite}
+                isFavorite={isFavorite}
+                onAddXp={addXp}
+                token={token}
+              />
+            )}
 
             {/* Discovery Route: Interconnected Fact Trails */}
             <DiscoveryRoute onSelectCuriosity={handleSelectCuriosity} />
@@ -379,21 +393,45 @@ export default function App() {
         {currentView === 'about' && (
           <AboutPage
             onBack={navigateToHome}
-            onOpenSubmit={() => setIsSubmitOpen(true)}
+            onOpenSubmit={() => {
+              if (isAdmin) {
+                setCurrentView('admin');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              } else {
+                setIsAdminLoginOpen(true);
+              }
+            }}
+            isAdmin={isAdmin}
           />
         )}
 
         {currentView === 'contact' && (
           <ContactPage
             onBack={navigateToHome}
-            onOpenSubmit={() => setIsSubmitOpen(true)}
+            onOpenSubmit={() => {
+              if (isAdmin) {
+                setCurrentView('admin');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              } else {
+                setIsAdminLoginOpen(true);
+              }
+            }}
+            isAdmin={isAdmin}
           />
         )}
 
         {currentView === 'privacy' && (
           <PrivacyPage
             onBack={navigateToHome}
-            onOpenSubmit={() => setIsSubmitOpen(true)}
+            onOpenSubmit={() => {
+              if (isAdmin) {
+                setCurrentView('admin');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              } else {
+                setIsAdminLoginOpen(true);
+              }
+            }}
+            isAdmin={isAdmin}
           />
         )}
 
@@ -435,41 +473,53 @@ export default function App() {
           }
         }}
         onTriggerRandom={handleTriggerRandom}
-        onOpenSubmit={() => setIsSubmitOpen(true)}
+        onOpenSubmit={() => {
+          if (isAdmin) {
+            setCurrentView('admin');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          } else {
+            setIsAdminLoginOpen(true);
+          }
+        }}
         isAdmin={isAdmin}
         onOpenAdminLogin={() => setIsAdminLoginOpen(true)}
       />
 
-      {/* Floating AI Curiosity Assistant Trigger Button */}
-      <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-2">
-        <button
-          id="floating-ai-assistant-btn"
-          onClick={() => {
-            playPopSound();
-            setIsAiAssistantOpen(true);
-          }}
-          className="group relative flex items-center gap-2.5 px-4 py-3 rounded-full bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-700 text-white font-black text-xs shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 border border-amber-300/40"
-          title="Abrir Assistente de Curiosidades Gemini IA"
-        >
-          <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-amber-300"></span>
-          </span>
+      {/* Floating AI Curiosity Assistant Trigger Button (Admin Only) */}
+      {isAdmin && (
+        <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-2">
+          <button
+            id="floating-ai-assistant-btn"
+            onClick={() => {
+              playPopSound();
+              setIsAiAssistantOpen(true);
+            }}
+            className="group relative flex items-center gap-2.5 px-4 py-3 rounded-full bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-700 text-white font-black text-xs shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 border border-amber-300/40"
+            title="Abrir Assistente de Curiosidades Gemini IA (Admin)"
+          >
+            <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-amber-300"></span>
+            </span>
 
-          <Sparkles className="w-4 h-4 animate-spin-slow" />
-          <span className="tracking-wide">Oráculo IA</span>
-          <span className="hidden sm:inline-block text-[9px] px-1.5 py-0.5 rounded-full bg-black/20 font-mono font-normal">
-            Gemini 3.7
-          </span>
-        </button>
-      </div>
+            <Sparkles className="w-4 h-4 animate-spin-slow" />
+            <span className="tracking-wide">Oráculo IA</span>
+            <span className="hidden sm:inline-block text-[9px] px-1.5 py-0.5 rounded-full bg-black/20 font-mono font-normal">
+              Gemini 3.7
+            </span>
+          </button>
+        </div>
+      )}
 
       {/* Global Modals */}
-      <AiAssistantModal
-        isOpen={isAiAssistantOpen}
-        onClose={() => setIsAiAssistantOpen(false)}
-        onAddXp={addXp}
-      />
+      {isAdmin && (
+        <AiAssistantModal
+          isOpen={isAiAssistantOpen}
+          onClose={() => setIsAiAssistantOpen(false)}
+          onAddXp={addXp}
+          token={token}
+        />
+      )}
 
       <AdminLoginModal
         isOpen={isAdminLoginOpen}

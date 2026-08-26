@@ -29,6 +29,7 @@ interface AiFactGeneratorSectionProps {
   onToggleFavorite?: (id: string) => void;
   isFavorite?: (id: string) => boolean;
   onAddXp?: (amount: number, reason: string) => void;
+  token?: string | null;
 }
 
 const CATEGORY_OPTIONS = [
@@ -54,7 +55,8 @@ export const AiFactGeneratorSection: React.FC<AiFactGeneratorSectionProps> = ({
   onOpenShare,
   onToggleFavorite,
   isFavorite,
-  onAddXp
+  onAddXp,
+  token
 }) => {
   const [selectedCategory, setSelectedCategory] = useState('ciencia');
   const [customTopic, setCustomTopic] = useState('');
@@ -71,7 +73,10 @@ export const AiFactGeneratorSection: React.FC<AiFactGeneratorSectionProps> = ({
     try {
       const res = await fetch('/api/ai/gerar-fato-publico', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'x-admin-token': token } : {})
+        },
         body: JSON.stringify({
           topic: topicToUse.trim() || undefined,
           category: selectedCategory
