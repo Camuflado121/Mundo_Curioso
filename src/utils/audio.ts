@@ -133,3 +133,35 @@ export function playWrongChime() {
     // Ignore
   }
 }
+
+export function playNotificationSound() {
+  try {
+    const ctx = getAudioContext();
+    if (!ctx) return;
+
+    const now = ctx.currentTime;
+
+    // Harmonic bell chime: F5 -> A5 -> C6
+    const freqs = [698.46, 880.00, 1046.50];
+    freqs.forEach((freq, idx) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const start = now + idx * 0.08;
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, start);
+
+      gain.gain.setValueAtTime(0.12, start);
+      gain.gain.exponentialRampToValueAtTime(0.001, start + 0.35);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start(start);
+      osc.stop(start + 0.35);
+    });
+  } catch {
+    // Ignore
+  }
+}
+

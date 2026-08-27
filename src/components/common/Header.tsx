@@ -12,7 +12,8 @@ import {
   PlusCircle,
   HelpCircle,
   BookOpen,
-  LayoutDashboard
+  LayoutDashboard,
+  Bell
 } from 'lucide-react';
 import { UserStats, Category } from '../../types';
 import { ALL_CATEGORIES } from '../../data/allCuriosities';
@@ -36,6 +37,8 @@ interface HeaderProps {
   isDarkMode: boolean;
   onToggleTheme: () => void;
   isAdmin?: boolean;
+  unreadNotificationsCount?: number;
+  onOpenNotifications?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -54,7 +57,9 @@ export const Header: React.FC<HeaderProps> = ({
   userStats,
   isDarkMode,
   onToggleTheme,
-  isAdmin = false
+  isAdmin = false,
+  unreadNotificationsCount = 0,
+  onOpenNotifications
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [categoriesDropdownOpen, setCategoriesDropdownOpen] = useState(false);
@@ -249,7 +254,7 @@ export const Header: React.FC<HeaderProps> = ({
             {/* User Gamification Badge (Level & Streak) */}
             <button
               onClick={onOpenProfile}
-              className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 hover:border-amber-400 transition-colors"
+              className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 hover:border-amber-400 transition-colors cursor-pointer"
               title="Seu Perfil de Conhecimento e Favoritos"
             >
               <div className="w-6 h-6 rounded-lg bg-amber-500 text-white font-bold text-[11px] flex items-center justify-center">
@@ -269,11 +274,31 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
             </button>
 
+            {/* Notification Center Trigger Button */}
+            {onOpenNotifications && (
+              <button
+                onClick={() => {
+                  playPopSound();
+                  onOpenNotifications();
+                }}
+                className="relative p-2 rounded-xl text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
+                title="Notificações e Atualizações de Conteúdo"
+                aria-label="Ver notificações"
+              >
+                <Bell className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
+                {unreadNotificationsCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 min-w-4 h-4 px-1 rounded-full bg-amber-500 text-white font-extrabold text-[9px] flex items-center justify-center shadow-xs border border-white dark:border-neutral-950 animate-pulse">
+                    {unreadNotificationsCount > 9 ? '9+' : unreadNotificationsCount}
+                  </span>
+                )}
+              </button>
+            )}
+
             {/* Publicar Curiosidade (Visible Exclusively to Admin) */}
             {isAdmin && (
               <button
                 onClick={onOpenSubmit}
-                className="hidden md:flex p-2 rounded-xl text-amber-600 dark:text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 transition-colors"
+                className="hidden md:flex p-2 rounded-xl text-amber-600 dark:text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 transition-colors cursor-pointer"
                 title="Publicar Nova Curiosidade (Admin)"
               >
                 <PlusCircle className="w-4 h-4" />
@@ -283,7 +308,7 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Dark / Light Toggle */}
             <button
               onClick={onToggleTheme}
-              className="p-2 rounded-xl text-neutral-500 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors"
+              className="p-2 rounded-xl text-neutral-500 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors cursor-pointer"
               aria-label="Alternar tema escuro/claro"
             >
               {isDarkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
@@ -292,7 +317,7 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Mobile Menu Hamburger */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 rounded-xl text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+              className="lg:hidden p-2 rounded-xl text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer"
               aria-label="Menu"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -307,22 +332,41 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="grid grid-cols-2 gap-2">
             <button
               onClick={() => handleNav('home')}
-              className="p-2.5 rounded-xl bg-neutral-100 dark:bg-neutral-900 text-xs font-semibold text-neutral-900 dark:text-white text-left"
+              className="p-2.5 rounded-xl bg-neutral-100 dark:bg-neutral-900 text-xs font-semibold text-neutral-900 dark:text-white text-left cursor-pointer"
             >
               Início
             </button>
             <button
               onClick={() => handleNav('quizzes')}
-              className="p-2.5 rounded-xl bg-neutral-100 dark:bg-neutral-900 text-xs font-semibold text-neutral-900 dark:text-white text-left flex items-center gap-1.5"
+              className="p-2.5 rounded-xl bg-neutral-100 dark:bg-neutral-900 text-xs font-semibold text-neutral-900 dark:text-white text-left flex items-center gap-1.5 cursor-pointer"
             >
               <HelpCircle className="w-3.5 h-3.5 text-amber-500" /> Quizzes
             </button>
             <button
               onClick={() => handleNav('artigos')}
-              className="p-2.5 rounded-xl bg-neutral-100 dark:bg-neutral-900 text-xs font-semibold text-neutral-900 dark:text-white text-left flex items-center gap-1.5"
+              className="p-2.5 rounded-xl bg-neutral-100 dark:bg-neutral-900 text-xs font-semibold text-neutral-900 dark:text-white text-left flex items-center gap-1.5 cursor-pointer"
             >
               <BookOpen className="w-3.5 h-3.5 text-blue-500" /> Especiais
             </button>
+            {onOpenNotifications && (
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  playPopSound();
+                  onOpenNotifications();
+                }}
+                className="p-2.5 rounded-xl bg-neutral-100 dark:bg-neutral-900 text-xs font-semibold text-neutral-900 dark:text-white text-left flex items-center justify-between cursor-pointer"
+              >
+                <div className="flex items-center gap-1.5">
+                  <Bell className="w-3.5 h-3.5 text-amber-500" /> Notificações
+                </div>
+                {unreadNotificationsCount > 0 && (
+                  <span className="px-1.5 py-0.2 rounded-full bg-amber-500 text-white font-bold text-[9px]">
+                    {unreadNotificationsCount}
+                  </span>
+                )}
+              </button>
+            )}
             {isAdmin && onOpenAiAssistant && (
               <button
                 onClick={() => {

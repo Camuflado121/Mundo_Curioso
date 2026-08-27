@@ -165,3 +165,28 @@ export interface PlatformStats {
   totalFavorites: number;
   dailyActiveReaders: number;
 }
+
+export type NotificationType = 'curiosity' | 'quiz' | 'article' | 'daily' | 'system';
+
+export interface AppNotification {
+  id: string;
+  title: string;
+  message: string;
+  type: NotificationType;
+  targetSlug?: string;
+  targetType?: 'curiosity' | 'quiz' | 'article' | 'category';
+  timestamp: string;
+  isRead: boolean;
+  imageUrl?: string;
+  categoryName?: string;
+}
+
+export interface NotificationPreferences {
+  browserPushEnabled: boolean;
+  soundEnabled: boolean;
+  notifyNewCuriosities: boolean;
+  notifyNewQuizzes: boolean;
+  notifyDailyFact: boolean;
+  notifySpecialArticles: boolean;
+}
+

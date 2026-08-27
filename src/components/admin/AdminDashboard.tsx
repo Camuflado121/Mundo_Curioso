@@ -48,6 +48,14 @@ interface AdminDashboardProps {
   token?: string | null;
   adminUser?: AdminUser | null;
   onLogout?: () => void;
+  onNotifyContentAdded?: (notif: {
+    title: string;
+    message: string;
+    type: 'curiosity' | 'quiz' | 'article' | 'daily';
+    targetSlug?: string;
+    imageUrl?: string;
+    categoryName?: string;
+  }) => void;
 }
 
 interface AiDailyStatusData {
@@ -72,7 +80,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   onRefreshCuriosities,
   token,
   adminUser,
-  onLogout
+  onLogout,
+  onNotifyContentAdded
 }) => {
   const [activeTab, setActiveTab] = useState<'stats' | 'ai-daily' | 'comments' | 'create' | 'suggestions' | 'security'>('stats');
   const [stats, setStats] = useState<PlatformStats | null>(null);
@@ -193,6 +202,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         playSuccessChime();
         confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 } });
         showToast('success', 'Curiosidade publicada com sucesso no portal!');
+        
+        if (onNotifyContentAdded) {
+          onNotifyContentAdded({
+            title: newCuriosity.title,
+            message: newCuriosity.summary || 'Nova curiosidade disponível para explorar no portal!',
+            type: 'curiosity',
+            imageUrl: newCuriosity.imageUrl,
+            categoryName: selectedCategory?.name
+          });
+        }
+
         setNewCuriosity({
           title: '',
           summary: '',
@@ -265,6 +285,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         playSuccessChime();
         confetti({ particleCount: 70, spread: 70, origin: { y: 0.5 } });
         showToast('success', 'Curiosidade gerada pela IA publicada com sucesso no portal!');
+        
+        if (onNotifyContentAdded) {
+          onNotifyContentAdded({
+            title: generatedResult.title,
+            message: generatedResult.summary || 'Nova curiosidade gerada por IA já disponível!',
+            type: 'curiosity',
+            imageUrl: generatedResult.imageUrl,
+            categoryName: generatedResult.categoryName
+          });
+        }
+
         setGeneratedResult(null);
         setAiTopic('');
         fetchDashboardData();
@@ -294,6 +325,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
         const titleGenerated = data.generated?.[0]?.title || 'Novo fato do dia';
         showToast('success', `Atualização concluída com sucesso! Nova curiosidade diária publicada: "${titleGenerated}"`);
+        
+        if (onNotifyContentAdded) {
+          onNotifyContentAdded({
+            title: `Curiosidade Diária: ${titleGenerated}`,
+            message: data.generated?.[0]?.summary || 'O fato do dia foi atualizado com sucesso no portal!',
+            type: 'daily',
+            imageUrl: data.generated?.[0]?.imageUrl
+          });
+        }
+
         fetchDashboardData();
         onRefreshCuriosities();
       } else {

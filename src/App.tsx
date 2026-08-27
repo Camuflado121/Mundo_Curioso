@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Curiosity, Quiz, SpecialArticle, Category } from './types';
+import { Curiosity, Quiz, SpecialArticle, Category, AppNotification } from './types';
 import {
   ALL_CURIOSITIES,
   getRandomCuriosity,
@@ -9,12 +9,15 @@ import {
   ALL_ARTICLES
 } from './data/allCuriosities';
 import { useUserStats } from './hooks/useUserStats';
+import { useNotifications } from './hooks/useNotifications';
 import { Header } from './components/common/Header';
 import { Footer } from './components/common/Footer';
 import { SearchModal } from './components/common/SearchModal';
 import { SubmitCuriosityModal } from './components/common/SubmitCuriosityModal';
 import { ProfileModal } from './components/common/ProfileModal';
 import { ShareModal } from './components/common/ShareModal';
+import { NotificationsModal } from './components/common/NotificationsModal';
+import { NotificationToast } from './components/common/NotificationToast';
 
 import { HeroSection } from './components/home/HeroSection';
 import { DailyCuriositySection } from './components/home/DailyCuriositySection';
@@ -69,7 +72,26 @@ export default function App() {
   const [isSubmitOpen, setIsSubmitOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isAiAssistantOpen, setIsAiAssistantOpen] = useState(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [shareCuriosity, setShareCuriosity] = useState<Curiosity | null>(null);
+
+  // Notification system hook
+  const {
+    notifications,
+    unreadCount,
+    preferences: notificationPreferences,
+    browserPermission,
+    toastNotification,
+    addNotification,
+    markAsRead: markNotificationAsRead,
+    markAllAsRead: markAllNotificationsAsRead,
+    removeNotification,
+    clearAllNotifications,
+    updatePreferences: updateNotificationPreferences,
+    requestBrowserPermission,
+    sendTestNotification,
+    dismissToast
+  } = useNotifications();
 
   // Dark/Light Theme state
   const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
@@ -294,6 +316,60 @@ export default function App() {
     handleSelectCuriosity(random);
   };
 
+  const handleNavigateToNotificationContent = (notif: AppNotification) => {
+    setIsReaderMode(false);
+    playPopSound();
+
+    if (notif.targetType === 'quiz' || notif.type === 'quiz') {
+      if (notif.targetSlug) {
+        const foundQuiz = ALL_QUIZZES.find(q => q.slug === notif.targetSlug || q.id === notif.targetSlug);
+        if (foundQuiz) {
+          handleSelectQuiz(foundQuiz);
+          return;
+        }
+      }
+      setCurrentView('quiz-hub');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (notif.targetType === 'article' || notif.type === 'article') {
+      if (notif.targetSlug) {
+        const foundArticle = ALL_ARTICLES.find(a => a.slug === notif.targetSlug || a.id === notif.targetSlug);
+        if (foundArticle) {
+          handleSelectArticle(foundArticle);
+          return;
+        }
+      }
+      setCurrentView('articles-list');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (notif.targetType === 'category') {
+      if (notif.targetSlug) {
+        handleSelectCategory(notif.targetSlug);
+        return;
+      }
+    }
+
+    // Default: Curiosity
+    if (notif.targetSlug) {
+      const foundCuriosity = curiosities.find(c => c.slug === notif.targetSlug || c.id === notif.targetSlug);
+      if (foundCuriosity) {
+        handleSelectCuriosity(foundCuriosity);
+        return;
+      }
+    }
+
+    // Fallback based on type
+    if (notif.type === 'daily') {
+      handleSelectCuriosity(dailyCuriosity);
+    } else {
+      navigateToHome();
+    }
+  };
+
   const dailyCuriosity = getDailyCuriosity();
 
   return (
@@ -343,6 +419,8 @@ export default function App() {
           isDarkMode={isDarkMode}
           onToggleTheme={toggleTheme}
           isAdmin={isAdmin}
+          unreadNotificationsCount={unreadCount}
+          onOpenNotifications={() => setIsNotificationsOpen(true)}
         />
       )}
 
@@ -496,6 +574,7 @@ export default function App() {
                 logout();
                 navigateToHome();
               }}
+              onNotifyContentAdded={addNotification}
             />
           ) : (
             <div className="py-24 max-w-md mx-auto px-4 text-center animate-in fade-in">
@@ -689,6 +768,30 @@ export default function App() {
         onToggleFavorite={toggleFavorite}
       />
 
+      <NotificationsModal
+        isOpen={isNotificationsOpen}
+        onClose={() => setIsNotificationsOpen(false)}
+        notifications={notifications}
+        unreadCount={unreadCount}
+        preferences={notificationPreferences}
+        browserPermission={browserPermission}
+        onMarkAsRead={markNotificationAsRead}
+        onMarkAllAsRead={markAllNotificationsAsRead}
+        onRemoveNotification={removeNotification}
+        onClearAll={clearAllNotifications}
+        onUpdatePreferences={updateNotificationPreferences}
+        onRequestBrowserPermission={requestBrowserPermission}
+        onSendTestNotification={sendTestNotification}
+        onNavigateToContent={handleNavigateToNotificationContent}
+      />
+
+      {/* Floating In-App Real-time Notification Banner */}
+      <NotificationToast
+        notification={toastNotification}
+        onClose={dismissToast}
+        onNavigate={handleNavigateToNotificationContent}
+      />
+
       {shareCuriosity && (
         <ShareModal
           isOpen={!!shareCuriosity}
@@ -699,3 +802,4 @@ export default function App() {
     </div>
   );
 }
+
