@@ -159,6 +159,127 @@ export const INITIAL_CATEGORIES: Category[] = [
 
 export const INITIAL_CURIOSITIES: Curiosity[] = [
   {
+    id: 'c-webb-2026',
+    slug: 'telescopio-james-webb-descobre-galaxias-monstro-no-amanhecer-do-universo',
+    title: 'O James Webb encontrou galáxias "monstro" no amanhecer cósmico que desafiam as leis da astrofísica',
+    summary: 'Apenas 300 milhões de anos após o Big Bang, galáxias ultrabrilhantes e massivas como a JADES-GS-z14-0 obrigam os cientistas a repensar a origem do universo.',
+    content: `Quando o Telescópio Espacial James Webb (JWST) apontou seus espelhos de berílio banhados a ouro para os cantos mais profundos e escuros do cosmos, os astrônomos esperavam encontrar apenas protogaláxias minúsculas, tênues e caóticas.\n\nEm vez disso, os dados espectroscópicos infravermelhos revelaram a galáxia JADES-GS-z14-0, brilhando intensamente a um desvio para o vermelho (redshift) z = 14,32 — existindo menos de 290 milhões de anos após o nascimento do espaço-tempo. Com mais de 1.600 anos-luz de diâmetro e centenas de milhões de vezes a massa do nosso Sol, esta estrutura formou estrelas a uma velocidade colossal e inexplicável para a idade cósmica.\n\nPara surpresa ainda maior dos cosmólogos, a análise de comprimentos de onda detectou abundância de poeira cósmica e elementos pesados como oxigênio ionizado. Isso indica que várias gerações anteriores de estrelas supermassivas já haviam nascido, vivido vidas meteóricas e explodido em supernovas, semeando o espaço com os blocos fundamentais da matéria muito antes do que qualquer modelo teórico previa ser possível!`,
+    categoryId: 'espaco',
+    categoryName: 'Espaço & Universo',
+    categoryIcon: 'Sparkles',
+    tags: ['james-webb', 'astronomia', 'origem-do-universo', 'redshift', 'astrofísica', 'nasa'],
+    author: 'Prof. Lucas Mendes & Equipe Editorial',
+    readTimeMinutes: 4,
+    views: 64200,
+    likes: 4980,
+    shares: 1840,
+    date: '2026-08-26',
+    imageUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80',
+    sourceUrl: 'https://webbtelescope.org/contents/news-releases/2024/news-2024-118',
+    sourceName: 'NASA / ESA / CSA Space Telescope Science Institute',
+    isFeatured: true,
+    isDaily: true,
+    didYouKnow: 'A luz que o James Webb captou da galáxia JADES-GS-z14-0 viajou por mais de 13,5 bilhões de anos pelo espaço em expansão até atingir os sensores do telescópio!',
+    funFactor: 99,
+    relatedSlugs: ['existe-um-planeta-onde-chove-vidro-lateralmente', 'buracos-negros-emitem-o-som-mais-grave-do-universo', 'cristais-de-tempo-o-novo-estado-quantico-da-materia']
+  },
+  {
+    id: 'c-niassa-2026',
+    slug: 'lago-niassa-o-laboratorio-de-evolucao-de-peixes-em-mocambique',
+    title: 'Lago Niassa em Moçambique: O santuário biológico onde peixes evoluíram mais rápido que os tentilhões de Darwin',
+    summary: 'Com águas cristalinas que descem a mais de 700 metros, o lago moçambicano abriga mais de 1.000 espécies de ciclídeos de cores vibrantes únicas no mundo.',
+    content: `Localizado no extremo norte de Moçambique, na fossa do Grande Vale do Rift africano, o Lago Niassa (também conhecido internacionalmente como Lago Malawi) é uma das maiores maravilhas aquáticas do planeta Terra. Com uma profundidade máxima superior a 700 metros, as suas águas são tão límpidas que é possível enxergar recifes rochosos a dezenas de metros de profundidade.\n\nO aspecto mais extraordinário do Lago Niassa é a sua explosão de biodiversidade: o lago abriga mais de 1.000 espécies diferentes de peixes da família dos Ciclídeos (conhecidos localmente como "Mbuna"), das quais mais de 95% não existem em nenhum outro lugar do planeta. Os biólogos evolucionistas consideram o Lago Niassa o laboratório natural de especiação adaptativa mais veloz e espetacular do reino animal — superando em muito os famosos tentilhões das Ilhas Galápagos estudados por Charles Darwin.\n\nCada espécie desenvolveu cores berrantes, rituais nupciais complexos com ninhos escavados em formato de castelo na areia e dentes especializados: alguns se alimentam de algas raspadas de pedras, outros de conchas e há espécies com bicos flexíveis para capturar plâncton em cavernas submersas. O Parque Nacional do Lago Niassa foi declarado Patrimônio Mundial pela UNESCO para proteger este tesouro genético inestimável.`,
+    categoryId: 'mocambique-africa',
+    categoryName: 'Moçambique & África',
+    categoryIcon: 'Globe2',
+    tags: ['moçambique', 'lago-niassa', 'biodiversidade', 'evolução', 'ciclídeos', 'natureza', 'unesco'],
+    author: 'Dr. Armando Sitoe',
+    readTimeMinutes: 4,
+    views: 48900,
+    likes: 4120,
+    shares: 1450,
+    date: '2026-08-25',
+    imageUrl: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=80',
+    sourceUrl: 'https://whc.unesco.org/en/list/289',
+    sourceName: 'UNESCO World Heritage Center & Freshwater Research Mozambique',
+    isFeatured: true,
+    didYouKnow: 'Muitas espécies de ciclídeos do Niassa praticam a "incubação bucal": a mãe guarda centenas de ovos e filhotes recém-nascidos dentro da própria boca por semanas para protegê-los de predadores!',
+    funFactor: 97,
+    relatedSlugs: ['monte-namuli-e-as-florestas-sagradas-de-mocambique', 'ponte-maputo-katembe-a-maior-ponte-suspensa-da-africa']
+  },
+  {
+    id: 'c-cristais-tempo-2026',
+    slug: 'cristais-de-tempo-o-novo-estado-quantico-da-materia',
+    title: 'Cristais de Tempo: O revolucionário estado da matéria quântica que se move sem consumir energia',
+    summary: 'Enquanto os cristais normais repetem seus átomos no espaço, os cristais de tempo repetem seus padrões periodicamente no tempo para sempre.',
+    content: `Propostos teoricamente em 2012 pelo físico e laureado com o Prêmio Nobel Frank Wilczek e sintetizados em laboratórios quânticos modernos, os "Cristais de Tempo" (Time Crystals) representam uma das descobertas mais profundas da física da matéria condensada nas últimas décadas.\n\nUm cristal comum (como o diamante, o sal ou o quartzo) possui uma rede de átomos organizados em uma estrutura espacial geométrica repetitiva regular que quebra a simetria de translação espacial. Um cristal de tempo vai além: ele quebra a simetria de translação temporal fundamental. A sua estrutura atômica interna oscila e altera periodicamente de estado de maneira perpétua, sem absorver calor ou gastar energia do ambiente.\n\nAo contrário de um motor de movimento perpétuo clássico (que viola a termodinâmica ao tentar extrair trabalho útil), os cristais de tempo operam no estado fundamental de energia mínima (ground state), o que significa que o seu movimento não pode ser desacelerado ou degradado por atrito térmico. Esta propriedade quântica única está a ser utilizada por físicos para construir a próxima geração de memórias quânticas imunes à perda de coerência (decoerência quântica) em supercomputadores.`,
+    categoryId: 'ciencia',
+    categoryName: 'Ciência & Física',
+    categoryIcon: 'Atom',
+    tags: ['física-quântica', 'cristais-de-tempo', 'computação-quântica', 'nobel', 'ciência-de-ponta'],
+    author: 'Prof. Lucas Mendes',
+    readTimeMinutes: 4,
+    views: 45700,
+    likes: 3820,
+    shares: 1290,
+    date: '2026-08-25',
+    imageUrl: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=1200&q=80',
+    sourceUrl: 'https://www.nature.com/articles/s41586-021-03928-y',
+    sourceName: 'Nature Physics & Quantum Information Archives',
+    isFeatured: true,
+    didYouKnow: 'Os primeiros cristais de tempo estáveis foram gerados usando uma cadeia de íons de itérbio aprisionados por campos eletromagnéticos pulsados por laser!',
+    funFactor: 98,
+    relatedSlugs: ['o-tempo-passa-mais-rapido-na-sua-cabeca-do-que-nos-pes', 'telescopio-james-webb-descobre-galaxias-monstro-no-amanhecer-do-universo']
+  },
+  {
+    id: 'c-wood-wide-web-2026',
+    slug: 'a-internet-das-florestas-redes-micorrizicas-e-arvores-mae',
+    title: 'A "Internet das Florestas": Como as árvores conversam e enviam socorro por redes fúngicas subterrâneas',
+    summary: 'A chamada "Wood Wide Web" conecta árvores inteiras por quilômetros, permitindo que florestas funcionem como superorganismos cooperativos.',
+    content: `Durante séculos, a botânica tradicional enxergou as florestas como campos de batalha competitivos onde cada árvore lutava isoladamente por luz solar, água e nutrientes. Pesquisas pioneiras da ecologista Suzanne Simard e de micologistas modernos revelaram uma realidade surpreendentemente cooperativa e interconectada.\n\nDebaixo da terra de qualquer floresta nativa existe a "Wood Wide Web" — uma rede colossal e densa de filamentos fúngicos microscópicos chamados hifas micorrízicas. Um único grama de solo florestal pode conter mais de 10 quilômetros dessas conexões vivas, ligando as raízes de centenas de árvores de diferentes espécies.\n\nAtravés dessa internet biológica natural, as árvores mais antigas e frondosas (as chamadas "Árvores-Mãe") transportam ativamente excedentes de carbono, nitrogênio, fósforo e água para alimentar mudas jovens que crescem na sombra. Quando uma árvore é atacada por besouros ou fungos parasitas, ela emite sinais químicos de emergência através da rede fúngica em poucas horas; as árvores vizinhas recebem o aviso e produzem antecipadamente taninos tóxicos e substâncias amargas nas folhas para repelir a praga antes que ela chegue!`,
+    categoryId: 'animais',
+    categoryName: 'Animais & Natureza',
+    categoryIcon: 'Flame',
+    tags: ['botânica', 'micorrizas', 'florestas', 'árvores', 'ecologia', 'natureza'],
+    author: 'Marina Silveira',
+    readTimeMinutes: 4,
+    views: 42100,
+    likes: 3670,
+    shares: 1380,
+    date: '2026-08-24',
+    imageUrl: 'https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1200&q=80',
+    sourceUrl: 'https://www.nature.com/articles/scientificamerican0421-50',
+    sourceName: 'Scientific American & Forest Ecology Research Group',
+    isFeatured: true,
+    didYouKnow: 'Em retribuição ao transporte de nutrientes, os fungos recebem das árvores até 30% de todo o açúcar produzido na fotossíntese foliar.',
+    funFactor: 96,
+    relatedSlugs: ['os-polvos-possuem-tres-coracoes-e-sangue-azul', 'a-agua-viva-que-pode-viver-para-sempre']
+  },
+  {
+    id: 'c-dna-storage-2026',
+    slug: 'armazenamento-em-dna-toda-a-internet-em-uma-caixa-de-sapatos',
+    title: 'Supercomputador de DNA: Toda a internet do mundo caberia em 1 kg de moléculas biológicas',
+    summary: 'A densidade de dados do DNA é tão monumental que 1 grama pode guardar 215 petabytes de arquivos digitais por dezenas de milhares de anos sem energia.',
+    content: `À medida que a humanidade produz bilhões de gigabytes de fotos, vídeos, pesquisas e códigos diariamente, os centros de dados tradicionais baseados em discos magnéticos e memórias flash de silício estão a atingir limites físicos de espaço, consumo de energia e durabilidade (discos rígidos costumam degradar em 5 a 10 anos).\n\nA solução mais durável já inventada existe há quase 4 bilhões de anos: o DNA (ácido desoxirribonucleico). O DNA codifica informações digitais através das quatro bases nitrogenadas químicas: Adenina (A), Citosina (C), Guanina (G) e Timina (T). Ao converter o código binário (0s e 1s) para essa sequência de quatro letras, cientistas conseguem sintetizar fitas de DNA artificial com qualquer tipo de dado digital — de sistemas operacionais e músicas a enciclopédias completas.\n\nA densidade de armazenamento do DNA é de cerca de 215 milhões de gigabytes por único grama. Se mantido em ambiente seco e fresco (como no permafrost ou em cápsulas de vidro), o DNA sobrevive intacto por mais de 10.000 anos sem necessitar de eletricidade constante para reter os dados gravados!`,
+    categoryId: 'tecnologia',
+    categoryName: 'Tecnologia & IA',
+    categoryIcon: 'Cpu',
+    tags: ['dna-storage', 'tecnologia', 'biotecnologia', 'futuro', 'computação', 'ciência'],
+    author: 'Renato Furtado',
+    readTimeMinutes: 3,
+    views: 39800,
+    likes: 3410,
+    shares: 1120,
+    date: '2026-08-24',
+    imageUrl: 'https://images.unsplash.com/photo-1530497610245-94d3c16cda28?auto=format&fit=crop&w=1200&q=80',
+    sourceUrl: 'https://www.science.org/doi/10.1126/science.aaj2038',
+    sourceName: 'Science Magazine & Bio-Digital Computing Institute',
+    isFeatured: true,
+    didYouKnow: 'Pesquisadores da Universidade de Washington já codificaram o videoclipe de "This Too Shall Pass" do OK Go em DNA e o leram de volta com 100% de precisão!',
+    funFactor: 97,
+    relatedSlugs: ['o-primeiro-bug-de-computador-era-um-inseto-real', 'cristais-de-tempo-o-novo-estado-quantico-da-materia']
+  },
+  {
     id: 'c1',
     slug: 'existe-um-planeta-onde-chove-vidro-lateralmente',
     title: 'Existe um planeta onde chove vidro fundido com ventos de 8.700 km/h',
@@ -177,8 +298,8 @@ export const INITIAL_CURIOSITIES: Curiosity[] = [
     imageUrl: 'https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?auto=format&fit=crop&w=1200&q=80',
     sourceUrl: 'https://nasa.gov/mission_pages/hubble/science/hd189733b.html',
     sourceName: 'NASA Hubble Space Telescope Archives',
-    isFeatured: true,
-    isDaily: true,
+    isFeatured: false,
+    isDaily: false,
     didYouKnow: 'A velocidade do vento em HD 189733b é tão rápida que levaria apenas cerca de 5 horas para dar a volta completa na Terra!',
     funFactor: 98,
     relatedSlugs: ['o-tempo-passa-mais-rapido-na-sua-cabeca-do-que-nos-pes', 'buracos-negros-emitem-o-som-mais-grave-do-universo']
@@ -743,6 +864,50 @@ export const INITIAL_CURIOSITIES: Curiosity[] = [
 
 export const INITIAL_QUIZZES: Quiz[] = [
   {
+    id: 'q-jwst-2026',
+    slug: 'quiz-revolucao-james-webb-e-cosmos',
+    title: 'Desafio James Webb: Os Novos Mistérios do Cosmos',
+    description: 'Teste se você está por dentro das descobertas mais recentes da astronomia e dos limites do espaço profundo.',
+    categoryId: 'espaco',
+    categoryName: 'Espaço & Universo',
+    categoryIcon: 'Sparkles',
+    difficulty: 'Médio',
+    estimatedMinutes: 5,
+    playsCount: 18400,
+    xpReward: 180,
+    imageUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1000&q=80',
+    questions: [
+      {
+        id: 'q-jwst-1',
+        question: 'O que o Telescópio James Webb descobriu sobre a galáxia primitiva JADES-GS-z14-0?',
+        options: ['Ela é feita inteiramente de antimatéria', 'Ela já era massiva e brilhante apenas 290 milhões de anos após o Big Bang', 'Ela está em rota de colisão com a Via Láctea', 'Ela não possui estrelas, apenas gás frio'],
+        correctIndex: 1,
+        explanation: 'JADES-GS-z14-0 surpreendeu astrônomos por ser extraordinariamente luminosa e massiva em uma época cósmica em que as galáxias deveriam ser minúsculas e primitivas.'
+      },
+      {
+        id: 'q-jwst-2',
+        question: 'O que caracteriza o estado quântico conhecido como "Cristal de Tempo"?',
+        options: ['Ele viaja fisicamente no tempo para o passado', 'Ele quebra a simetria de translação temporal e oscila perpetuamente sem gastar energia', 'Ele se dissolve instantaneamente ao contato com a luz', 'Ele congela a temperatura a zero absoluto exato'],
+        correctIndex: 1,
+        explanation: 'Cristais de tempo oscilam em padrões periódicos temporais no seu estado de energia mínima (ground state) sem violar a termodinâmica nem consumir energia.'
+      },
+      {
+        id: 'q-jwst-3',
+        question: 'Qual lago em Moçambique é considerado o laboratório natural com mais de 1.000 espécies de peixes ciclídeos?',
+        options: ['Lago Niassa (Malawi)', 'Lago Vitória', 'Lago Tanganica', 'Lago Cahora Bassa'],
+        correctIndex: 0,
+        explanation: 'O Lago Niassa possui a maior diversidade de peixes de água doce do mundo, com uma taxa de especiação que supera a dos tentilhões de Darwin.'
+      },
+      {
+        id: 'q-jwst-4',
+        question: 'Como as árvores transmitem avisos de pragas e compartilham nutrientes em uma floresta?',
+        options: ['Por ondas de rádio eletromagnéticas', 'Pela rede fúngica subterrânea (Wood Wide Web de hifas micorrízicas)', 'Exclusivamente pelo pólen transportado pelo vento', 'Elas não se comunicam'],
+        correctIndex: 1,
+        explanation: 'As hifas de fungos micorrízicos conectam as raízes das árvores, transportando carbono, minerais e sinais químicos de alerta por quilômetros.'
+      }
+    ]
+  },
+  {
     id: 'q1',
     slug: 'quiz-espaco-e-cosmos',
     title: 'Desafio Cósmico: Quanto você realmente sabe sobre o Universo?',
@@ -917,10 +1082,132 @@ export const INITIAL_QUIZZES: Quiz[] = [
         explanation: 'O mascote Pennybags nunca usou monóculo em nenhuma embalagem oficial da Hasbro — é um dos casos clássicos do Efeito Mandela!'
       }
     ]
+  },
+  {
+    id: 'q5',
+    slug: 'quiz-tecnologia-do-futuro-e-ia',
+    title: 'Fronteiras da Tecnologia: IA, Computação Quântica e DNA Storage',
+    description: 'Teste seus conhecimentos sobre as inovações que estão a transformar o futuro da computação.',
+    categoryId: 'tecnologia',
+    categoryName: 'Tecnologia & IA',
+    categoryIcon: 'Cpu',
+    difficulty: 'Difícil',
+    estimatedMinutes: 5,
+    playsCount: 8400,
+    xpReward: 160,
+    imageUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1000&q=80',
+    questions: [
+      {
+        id: 'q5-1',
+        question: 'O que é a computação neuromórfica?',
+        options: ['Computadores que funcionam apenas na água', 'Chips que imitam a arquitetura de neurônios e sinapses biológicas', 'Sistemas baseados em fitas magnéticas antigas', 'Telas flexíveis holográficas'],
+        correctIndex: 1,
+        explanation: 'Chips neuromórficos copiam a estrutura neural do cérebro humano, processando dados com pulsos elétricos eficientes com baixíssimo consumo de energia.'
+      },
+      {
+        id: 'q5-2',
+        question: 'Quanto tempo os dados gravados em fitas de DNA artificial conseguem durar intactos?',
+        options: ['Apenas 6 meses', 'Cerca de 10 anos', 'Mais de 10.000 anos sem gastar eletricidade', 'Infinitos bilhões de anos no calor do magma'],
+        correctIndex: 2,
+        explanation: 'Em ambiente seco e refrigerado, moléculas sintéticas de DNA preservam informações digitais por dezenas de milhares de anos sem necessidade de recarga elétrica.'
+      },
+      {
+        id: 'q5-3',
+        question: 'O que o Mecanismo de Anticítera do século II a.C. calculava?',
+        options: ['Receitas de culinária grega', 'Posição do Sol, eclipses e ciclos dos Jogos Olímpicos', 'Velocidade dos ventos marítimos', 'Rotas de caravelas romanas'],
+        correctIndex: 1,
+        explanation: 'O Mecanismo de Anticítera usava mais de 30 engrenagens de bronze para prever com precisão matemática eclipses solares, fases lunares e datas dos Jogos Olímpicos.'
+      }
+    ]
+  },
+  {
+    id: 'q6',
+    slug: 'quiz-maravilhas-e-misterios-do-planeta',
+    title: 'Mistérios & Extremos da Terra: Do Lago Natron às Profundezas Oceânicas',
+    description: 'Descubra os fenômenos mais surreais e enigmáticos do nosso planeta.',
+    categoryId: 'misterios',
+    categoryName: 'Mistérios & Fenômenos',
+    categoryIcon: 'Compass',
+    difficulty: 'Médio',
+    estimatedMinutes: 4,
+    playsCount: 10200,
+    xpReward: 140,
+    imageUrl: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1000&q=80',
+    questions: [
+      {
+        id: 'q6-1',
+        question: 'Por que animais que caem no Lago Natron na Tanzânia parecem virar "estátuas"?',
+        options: ['Pela água congelada a -50 °C', 'Pela altíssima concentração de sais de carbonato de sódio de pH alcalino que calcifica os tecidos', 'Por lava sólida negra', 'Por veneno de serpentes aquáticas'],
+        correctIndex: 1,
+        explanation: 'As águas cáusticas de pH 10.5 ricas em natrocarbonatita preservam e calcificam os corpos de aves desatentas, agindo como o sal dos embalsamadores egípcios.'
+      },
+      {
+        id: 'q6-2',
+        question: 'O que a tecnologia LiDAR revelou sob a densa vegetação da Amazônia boliviana?',
+        options: ['Minas secretas de diamantes', 'Metrópoles monumentais da cultura Casarabe com pirâmides de 22 metros e canais', 'Bases espaciais abandonadas', 'Túneis para o centro da Terra'],
+        correctIndex: 1,
+        explanation: 'Pulsos de laser aéreos LiDAR desvendaram 26 assentamentos urbanos pré-colombianos com pirâmides, canais navegáveis e estradas elevadas.'
+      },
+      {
+        id: 'q6-3',
+        question: 'O que é a "Wood Wide Web" nas florestas?',
+        options: ['Um serviço de Wi-Fi via satélite para guardas-florestais', 'A rede subterrânea de hifas de fungos que conecta raízes de árvores para troca de nutrientes e avisos de perigo', 'Um tipo de cipó gigante da Amazônia', 'Um projeto de satélite europeu'],
+        correctIndex: 1,
+        explanation: 'A rede micorrízica subterrânea permite que árvores compartilhem água, açúcares e transmitam alertas bioquímicos contra pragas.'
+      }
+    ]
   }
 ];
 
 export const INITIAL_ARTICLES: SpecialArticle[] = [
+  {
+    id: 'art-jwst-2026',
+    slug: 'as-descobertas-mais-revolucionarias-do-telescopio-james-webb',
+    title: 'A Nova Cosmologia do James Webb: As Descobertas Que Estão a Reescrever os Livros de Física',
+    subtitle: 'Galáxias impossivelmente maduras, atmosferas de exoplanetas habitáveis e os primeiros buracos negros do universo.',
+    content: `Desde que entrou em operação no ponto de Lagrange L2 a 1,5 milhão de quilômetros da Terra, o Telescópio Espacial James Webb (JWST) inaugurou uma era dourada na astronomia observacional.\n\n### 1. As Galáxias "Impossíveis" do Amanhecer Cósmico\nAo perscrutar os primeiros 400 milhões de anos após o Big Bang, o JWST encontrou dezenas de galáxias luminosas e ricas em metais pesados que desafiam o modelo cosmológico padrão (Lambda-CDM). A formação estelar no universo jovem ocorreu muito mais rápido e vorazmente do que se supunha.\n\n### 2. Espectrometria de Exoplanetas Habitáveis\nO JWST conseguiu "farejar" o ar de planetas alienígenas a dezenas de anos-luz. No sistema TRAPPIST-1 e no gigante K2-18b, o telescópio detectou assinaturas de dióxido de carbono, vapor de água e moléculas baseadas em carbono como dimetilsulfeto (DMS).\n\n### 3. Berçários Estelares em Alta Definição\nImagens infravermelhas ultraprofundas revelaram jatos de plasma e discos protoplanetários em nebulosas como Carina e Pilares da Criação com nitidez sem precedentes, mostrando como novos sistemas solares nascem da poeira estelar.`,
+    categoryId: 'espaco',
+    categoryName: 'Espaço & Universo',
+    readTimeMinutes: 7,
+    author: 'Prof. Lucas Mendes & Equipe Editorial',
+    date: '2026-08-26',
+    imageUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80',
+    views: 68400,
+    likes: 5410,
+    tags: ['james-webb', 'astronomia', 'cosmos', 'exoplanetas', 'física', 'nasa']
+  },
+  {
+    id: 'art-neuromorfico-2026',
+    slug: 'computacao-bio-hibrida-chips-vivos-e-inteligencia-artificial',
+    title: 'A Era Bio-Híbrida: Cérebros em Placas de Silício e a Nova Fronteira da Inteligência Artificial',
+    subtitle: 'Como a fusão de neurônios vivos com semicondutores promete revolucionar a robótica e curar paralisias.',
+    content: `A fronteira entre o carbono biológico e o silício dos semicondutores está a desvanecer-se rapidamente nos principais centros de biotecnologia do mundo.\n\n### Neurônios que Aprendem em Silício\nProjetos de biocomputação integraram culturas de neurônios corticais vivos sobre matrizes de eletrodos de alta densidade. Estimulados por sinais elétricos, esses aglomerados celulares demonstraram neuroplasticidade ativa, aprendendo comportamentos de navegação e resolução de problemas espaciais em questão de minutos.\n\n### Eficiência Energética sem Precedentes\nEnquanto os maiores modelos de inteligência artificial de data centers consomem dezenas de gigawatts-hora por ano, redes bio-híbridas realizam processamento com consumo energético de micro-watts, operando de forma assíncrona por disparos de potenciais de ação (spikes).\n\n### Próteses Neurais Bidirecionais\nEssa tecnologia já está a ser testada clinicamente para restaurar o tato e os movimentos voluntários em pacientes com lesões completas na medula espinhal, transmitindo sinais cerebrais diretamente para exoesqueletos sem atraso perceptível.`,
+    categoryId: 'tecnologia',
+    categoryName: 'Tecnologia & IA',
+    readTimeMinutes: 6,
+    author: 'Felipe Ramos & Dra. Beatriz Nogueira',
+    date: '2026-08-26',
+    imageUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80',
+    views: 47600,
+    likes: 4230,
+    tags: ['ia', 'neuromorfico', 'bioengenharia', 'futuro', 'neurociencia']
+  },
+  {
+    id: 'art-mocambique-natureza-2026',
+    slug: 'mocambique-a-joia-ecologica-da-africa-austral',
+    title: 'Moçambique Selvagem: Da Gorongosa e Monte Namúli ao Paraíso Marinho de Bazaruto',
+    subtitle: 'Como o país se tornou uma das maiores referências globais de restauração de ecossistemas e santuários de biodiversidade.',
+    content: `Com mais de 2.500 quilômetros de litoral banhados pelas águas mornas do Canal de Moçambique e um interior marcado por montanhas sagradas e savanas ricas em vida selvagem, Moçambique abriga alguns dos ecossistemas mais vibrantes do continente africano.\n\n### O Renascimento da Gorongosa\nO Parque Nacional da Gorongosa protagoniza um dos maiores feitos de conservação do século XXI. Após décadas de conflito que devastaram 95% dos grandes herbívoros, o parque restabeleceu populações de leões, elefantes e hipopótamos através de um modelo pioneiro que integra reflorestamento, educação científica e apoio às comunidades locais.\n\n### O Santuário Submarino de Bazaruto\nO Arquipélago de Bazaruto é o último grande refúgio de dugongos (mamíferos marinhos parentes dos peixes-bois) de todo o Oceano Índico Ocidental. Suas águas turquesa abrigam mais de 2.000 espécies de peixes, tartarugas marinhas e tubarões-baleia.\n\n### Florestas Nebulares do Namúli e Mabu\nNas altas montanhas da Zambézia, as florestas de altitude continuam a surpreender cientistas internacionais com a descoberta contínua de novas espécies de camaleões pigmeus, borboletas raras e plantas medicinais únicas.`,
+    categoryId: 'mocambique-africa',
+    categoryName: 'Moçambique & África',
+    readTimeMinutes: 8,
+    author: 'Dr. Armando Sitoe & Dra. Luísa Cossa',
+    date: '2026-08-25',
+    imageUrl: 'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=1200&q=80',
+    views: 58200,
+    likes: 4890,
+    tags: ['moçambique', 'gorongosa', 'bazaruto', 'biodiversidade', 'ecoturismo', 'áfrica']
+  },
   {
     id: 'art-1',
     slug: '10-misterios-cientificos-que-a-humanidade-ainda-nao-conseguiu-explicar',
@@ -972,16 +1259,21 @@ export const INITIAL_ARTICLES: SpecialArticle[] = [
 ];
 
 export const DID_YOU_KNOW_FAST_FACTS = [
+  'O James Webb descobriu galáxias supermassivas brilhando intensamente apenas 290 milhões de anos após o Big Bang.',
+  'O Lago Niassa em Moçambique abriga mais de 1.000 espécies de peixes que evoluíram mais rápido que os animais de Galápagos.',
+  'Os Cristais de Tempo são um novo estado da matéria quântica que se move perpetuamente sem consumir energia.',
+  'A "Wood Wide Web" subterrânea conecta árvores por hifas fúngicas, enviando alertas químicos de pragas em horas.',
+  '1 grama de DNA biológico consegue armazenar mais de 215 milhões de gigabytes de dados digitais por 10.000 anos.',
   'O mel puro nunca estraga — potes de 3.000 anos achados no Egito continuam perfeitamente comestíveis.',
   'Os polvos possuem 3 corações, sangue azul e dois terços dos seus neurônios estão nos tentáculos.',
   'Existe um planeta (HD 189733b) onde chove vidro fundido com ventos de 8.700 km/h.',
   'O tempo passa literalmente mais rápido na sua cabeça do que nos seus pés devido à gravidade.',
-  'A Turritopsis dohrnii é uma água-viva capaz de rejuvenescer indefinidamente quando sofre estresse.',
-  'Mansa Musa, imperador do Mali no século XIV, foi o ser humano mais rico de toda a história humana.',
-  'Mais de 99% de todo o tráfego intercontinental da internet viaja por cabos no fundo do mar.',
-  'O primeiro bug da computação em 1947 era uma mariposa de verdade presa nos circuitos do Mark II.',
-  'A cachalote produz estalidos de 236 dB debaixo d\'água — mais alto que o barulho de um foguete espacial.',
-  'Moçambique abriga o Monte Namúli, santuário natural e morada sagrada ancestral dos espíritos Lomwe.',
-  'Os tardígrados microscópicos sobrevivem ao vácuo gélido do espaço e a temperaturas de -272 °C.',
-  'Na ilha de Yap, moedas gigantes de pedra calcária de 4 toneladas continuam valendo mesmo no fundo do mar.'
+  'A Turritopsis dohrnii é uma água-viva capaz de rejuvenescer indefinidamente quando sofre estresse biológico.',
+  'Mansa Musa, imperador do Mali no século XIV, foi o ser humano mais rico de toda a história humana (mais de US$ 400 bilhões).',
+  'Mais de 99% de todo o tráfego intercontinental da internet viaja por cabos de fibra óptica no fundo do mar.',
+  'O primeiro bug da computação em 1947 era uma mariposa de verdade retirada dos circuitos do computador Mark II.',
+  'A baleia-cachalote produz estalidos de 236 dB debaixo d\'água — mais alto que o barulho de um foguete espacial.',
+  'Moçambique abriga o Monte Namúli, santuário natural e morada sagrada ancestral dos espíritos do povo Lomwe.',
+  'Os tardígrados microscópicos sobrevivem ao vácuo gélido do espaço e a temperaturas extremas de -272 °C.',
+  'Na ilha de Yap, moedas gigantes de pedra calcária de 4 toneladas continuam com valor reconhecido mesmo no leito do oceano.'
 ];

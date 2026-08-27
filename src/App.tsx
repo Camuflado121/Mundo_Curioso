@@ -62,6 +62,7 @@ export default function App() {
   const [selectedCategorySlug, setSelectedCategorySlug] = useState<string>('ciencia');
   const [selectedQuiz, setSelectedQuiz] = useState<Quiz | null>(null);
   const [selectedArticle, setSelectedArticle] = useState<SpecialArticle | null>(null);
+  const [isReaderMode, setIsReaderMode] = useState(false);
 
   // Modals state
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -244,6 +245,7 @@ export default function App() {
 
   // Navigation handlers
   const navigateToHome = () => {
+    setIsReaderMode(false);
     setCurrentView('home');
     setSelectedCuriosity(null);
     setSelectedQuiz(null);
@@ -252,6 +254,7 @@ export default function App() {
   };
 
   const handleSelectCuriosity = (item: Curiosity) => {
+    setIsReaderMode(false);
     playPopSound();
     setSelectedCuriosity(item);
     setCurrentView('curiosity-detail');
@@ -261,6 +264,7 @@ export default function App() {
   };
 
   const handleSelectCategory = (categorySlug: string) => {
+    setIsReaderMode(false);
     playPopSound();
     setSelectedCategorySlug(categorySlug);
     setCurrentView('category');
@@ -268,6 +272,7 @@ export default function App() {
   };
 
   const handleSelectQuiz = (quiz: Quiz) => {
+    setIsReaderMode(false);
     playPopSound();
     setSelectedQuiz(quiz);
     setCurrentView('quiz-play');
@@ -275,6 +280,7 @@ export default function App() {
   };
 
   const handleSelectArticle = (article: SpecialArticle) => {
+    setIsReaderMode(false);
     playPopSound();
     setSelectedArticle(article);
     setCurrentView('article-detail');
@@ -292,51 +298,53 @@ export default function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-neutral-50 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100 transition-colors duration-300 font-sans selection:bg-amber-500 selection:text-white">
-      {/* Top Header */}
-      <Header
-        currentView={currentView}
-        onNavigateHome={navigateToHome}
-        onNavigateCategories={() => {
-          handleSelectCategory('ciencia');
-        }}
-        onNavigateCategory={handleSelectCategory}
-        onNavigateQuizzes={() => {
-          setCurrentView('quiz-hub');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}
-        onNavigateArticles={() => {
-          setCurrentView('articles-list');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}
-        onNavigateAdmin={() => {
-          if (isAdmin) {
-            setCurrentView('admin');
+      {/* Top Header - Hidden in distraction-free Reader Mode */}
+      {!isReaderMode && (
+        <Header
+          currentView={currentView}
+          onNavigateHome={navigateToHome}
+          onNavigateCategories={() => {
+            handleSelectCategory('ciencia');
+          }}
+          onNavigateCategory={handleSelectCategory}
+          onNavigateQuizzes={() => {
+            setCurrentView('quiz-hub');
             window.scrollTo({ top: 0, behavior: 'smooth' });
-          } else {
-            setIsAdminLoginOpen(true);
-          }
-        }}
-        onOpenSearch={() => setIsSearchOpen(true)}
-        onOpenSubmit={() => {
-          if (isAdmin) {
-            setCurrentView('admin');
+          }}
+          onNavigateArticles={() => {
+            setCurrentView('articles-list');
             window.scrollTo({ top: 0, behavior: 'smooth' });
-          } else {
-            setIsAdminLoginOpen(true);
-          }
-        }}
-        onOpenProfile={() => setIsProfileOpen(true)}
-        onOpenAiAssistant={() => {
-          if (isAdmin) {
-            setIsAiAssistantOpen(true);
-          }
-        }}
-        onTriggerRandom={handleTriggerRandom}
-        userStats={stats}
-        isDarkMode={isDarkMode}
-        onToggleTheme={toggleTheme}
-        isAdmin={isAdmin}
-      />
+          }}
+          onNavigateAdmin={() => {
+            if (isAdmin) {
+              setCurrentView('admin');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+              setIsAdminLoginOpen(true);
+            }
+          }}
+          onOpenSearch={() => setIsSearchOpen(true)}
+          onOpenSubmit={() => {
+            if (isAdmin) {
+              setCurrentView('admin');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+              setIsAdminLoginOpen(true);
+            }
+          }}
+          onOpenProfile={() => setIsProfileOpen(true)}
+          onOpenAiAssistant={() => {
+            if (isAdmin) {
+              setIsAiAssistantOpen(true);
+            }
+          }}
+          onTriggerRandom={handleTriggerRandom}
+          userStats={stats}
+          isDarkMode={isDarkMode}
+          onToggleTheme={toggleTheme}
+          isAdmin={isAdmin}
+        />
+      )}
 
       {/* Main Dynamic View Outlet */}
       <main className="grow">
@@ -418,6 +426,8 @@ export default function App() {
             isAdmin={isAdmin}
             token={token}
             adminName={adminUser?.name}
+            isReaderMode={isReaderMode}
+            onToggleReaderMode={() => setIsReaderMode(prev => !prev)}
           />
         )}
 
@@ -470,6 +480,8 @@ export default function App() {
             isAdmin={isAdmin}
             token={token}
             adminName={adminUser?.name}
+            isReaderMode={isReaderMode}
+            onToggleReaderMode={() => setIsReaderMode(prev => !prev)}
           />
         )}
 
@@ -567,50 +579,52 @@ export default function App() {
         )}
       </main>
 
-      {/* Global Footer */}
-      <Footer
-        onNavigate={(view: string, param?: string) => {
-          if (view === 'home') navigateToHome();
-          else if (view === 'categoria' && param) handleSelectCategory(param);
-          else if (view === 'quizzes') {
-            setCurrentView('quiz-hub');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          } else if (view === 'artigos') {
-            setCurrentView('articles-list');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          } else if (view === 'admin') {
+      {/* Global Footer - Hidden in distraction-free Reader Mode */}
+      {!isReaderMode && (
+        <Footer
+          onNavigate={(view: string, param?: string) => {
+            if (view === 'home') navigateToHome();
+            else if (view === 'categoria' && param) handleSelectCategory(param);
+            else if (view === 'quizzes') {
+              setCurrentView('quiz-hub');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else if (view === 'artigos') {
+              setCurrentView('articles-list');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else if (view === 'admin') {
+              if (isAdmin) {
+                setCurrentView('admin');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              } else {
+                setIsAdminLoginOpen(true);
+              }
+            } else if (view === 'sobre') {
+              setCurrentView('about');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else if (view === 'contato') {
+              setCurrentView('contact');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else if (view === 'privacidade') {
+              setCurrentView('privacy');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+          }}
+          onTriggerRandom={handleTriggerRandom}
+          onOpenSubmit={() => {
             if (isAdmin) {
               setCurrentView('admin');
               window.scrollTo({ top: 0, behavior: 'smooth' });
             } else {
               setIsAdminLoginOpen(true);
             }
-          } else if (view === 'sobre') {
-            setCurrentView('about');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          } else if (view === 'contato') {
-            setCurrentView('contact');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          } else if (view === 'privacidade') {
-            setCurrentView('privacy');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }
-        }}
-        onTriggerRandom={handleTriggerRandom}
-        onOpenSubmit={() => {
-          if (isAdmin) {
-            setCurrentView('admin');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          } else {
-            setIsAdminLoginOpen(true);
-          }
-        }}
-        isAdmin={isAdmin}
-        onOpenAdminLogin={() => setIsAdminLoginOpen(true)}
-      />
+          }}
+          isAdmin={isAdmin}
+          onOpenAdminLogin={() => setIsAdminLoginOpen(true)}
+        />
+      )}
 
-      {/* Floating AI Curiosity Assistant Trigger Button (Admin Only) */}
-      {isAdmin && (
+      {/* Floating AI Curiosity Assistant Trigger Button (Admin Only, hidden in Reader Mode) */}
+      {isAdmin && !isReaderMode && (
         <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-2">
           <button
             id="floating-ai-assistant-btn"
@@ -618,7 +632,7 @@ export default function App() {
               playPopSound();
               setIsAiAssistantOpen(true);
             }}
-            className="group relative flex items-center gap-2.5 px-4 py-3 rounded-full bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-700 text-white font-black text-xs shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 border border-amber-300/40"
+            className="group relative flex items-center gap-2.5 px-4 py-3 rounded-full bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-700 text-white font-black text-xs shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 border border-amber-300/40 cursor-pointer"
             title="Abrir Assistente de Curiosidades Gemini IA (Admin)"
           >
             <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">

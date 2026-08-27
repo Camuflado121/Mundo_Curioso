@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ArrowLeft,
   Calendar,
@@ -16,13 +16,21 @@ import {
   Smile,
   Zap,
   Flame,
-  CheckCircle2
+  CheckCircle2,
+  BookOpen,
+  Minimize2
 } from 'lucide-react';
 import { Curiosity } from '../../types';
 import { getRelatedCuriosities } from '../../data/allCuriosities';
 import { AdBanner } from '../common/AdBanner';
 import { playPopSound } from '../../utils/audio';
 import { CommentsSection } from '../common/CommentsSection';
+import {
+  ReaderToolbar,
+  ReaderFontSize,
+  ReaderFontFamily,
+  ReaderTheme
+} from '../common/ReaderToolbar';
 
 interface CuriosityDetailViewProps {
   curiosity: Curiosity;
@@ -35,6 +43,8 @@ interface CuriosityDetailViewProps {
   isAdmin?: boolean;
   token?: string | null;
   adminName?: string;
+  isReaderMode?: boolean;
+  onToggleReaderMode?: () => void;
 }
 
 export const CuriosityDetailView: React.FC<CuriosityDetailViewProps> = ({
@@ -47,11 +57,33 @@ export const CuriosityDetailView: React.FC<CuriosityDetailViewProps> = ({
   onTriggerRandom,
   isAdmin = false,
   token,
-  adminName
+  adminName,
+  isReaderMode = false,
+  onToggleReaderMode
 }) => {
   const [likesCount, setLikesCount] = useState(curiosity.likes);
   const [hasLiked, setHasLiked] = useState(false);
   const [selectedReaction, setSelectedReaction] = useState<string | null>(null);
+
+  // Reader mode customizations
+  const [fontSize, setFontSize] = useState<ReaderFontSize>('md');
+  const [fontFamily, setFontFamily] = useState<ReaderFontFamily>('serif');
+  const [readerTheme, setReaderTheme] = useState<ReaderTheme>('default');
+  const [readingProgress, setReadingProgress] = useState(0);
+
+  // Scroll listener for reading progress calculation
+  useEffect(() => {
+    const handleScroll = () => {
+      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (totalHeight > 0) {
+        const progress = (window.scrollY / totalHeight) * 100;
+        setReadingProgress(progress);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const related = getRelatedCuriosities(curiosity, 3);
   const isFav = isFavorite(curiosity.slug);
@@ -81,21 +113,169 @@ export const CuriosityDetailView: React.FC<CuriosityDetailViewProps> = ({
     }
   };
 
+  // ----------------------------------------------------
+  // DISTRACTION-FREE READER MODE RENDER
+  // ----------------------------------------------------
+  if (isReaderMode) {
+    const themeWrapperClass =
+      readerTheme === 'sepia'
+        ? 'bg-[#fbf0d9] text-[#3d2f1d]'
+        : readerTheme === 'dark'
+        ? 'bg-[#0f0f11] text-[#e2e2e8]'
+        : readerTheme === 'light'
+        ? 'bg-[#ffffff] text-[#1a202c]'
+        : 'bg-white dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100';
+
+    const fontClass =
+      fontFamily === 'serif'
+        ? 'font-serif'
+        : fontFamily === 'mono'
+        ? 'font-mono'
+        : 'font-sans';
+
+    const paragraphTextClass =
+      fontSize === 'sm'
+        ? 'text-base leading-relaxed'
+        : fontSize === 'lg'
+        ? 'text-xl sm:text-2xl leading-loose'
+        : 'text-lg sm:text-xl leading-relaxed';
+
+    return (
+      <div className={`min-h-screen transition-colors duration-200 ${themeWrapperClass}`}>
+        {/* Floating Toolbar & Scroll Progress */}
+        <ReaderToolbar
+          onExit={onToggleReaderMode || onBack}
+          fontSize={fontSize}
+          setFontSize={setFontSize}
+          fontFamily={fontFamily}
+          setFontFamily={setFontFamily}
+          readerTheme={readerTheme}
+          setReaderTheme={setReaderTheme}
+          readTimeMinutes={curiosity.readTimeMinutes}
+          readingProgress={readingProgress}
+        />
+
+        {/* Distraction-free Content Body */}
+        <main className="max-w-2xl mx-auto px-5 sm:px-8 pt-20 sm:pt-24 pb-20 animate-in fade-in duration-300">
+          {/* Category & Badge */}
+          <div className="flex items-center gap-2 mb-4 text-xs opacity-75 font-semibold">
+            <span className="uppercase tracking-widest">{curiosity.categoryName}</span>
+            <span>•</span>
+            <span className="flex items-center gap-1">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" /> Fato Científico
+            </span>
+          </div>
+
+          {/* Article Title */}
+          <h1
+            className={`text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-6 leading-snug ${fontClass}`}
+          >
+            {curiosity.title}
+          </h1>
+
+          {/* Meta details */}
+          <div className="flex flex-wrap items-center gap-3 text-xs opacity-60 pb-6 mb-8 border-b border-current/10">
+            <span>Por {curiosity.author}</span>
+            <span>•</span>
+            <span>{curiosity.date}</span>
+            <span>•</span>
+            <span>{curiosity.readTimeMinutes} min de leitura</span>
+          </div>
+
+          {/* Lead Summary Highlight */}
+          <blockquote className="my-6 pl-4 border-l-4 border-amber-500/70 italic text-base sm:text-lg opacity-90 leading-relaxed">
+            "{curiosity.summary}"
+          </blockquote>
+
+          {/* Content Paragraphs */}
+          <article className={`space-y-6 my-8 ${fontClass} ${paragraphTextClass}`}>
+            {curiosity.content.split('\n\n').map((paragraph, idx) => (
+              <p key={idx} className="leading-relaxed">
+                {paragraph}
+              </p>
+            ))}
+          </article>
+
+          {/* "Você Sabia?" Box */}
+          {curiosity.didYouKnow && (
+            <div className="my-10 p-6 rounded-2xl border border-current/15 bg-current/5">
+              <div className="flex items-center gap-2 text-amber-500 text-xs font-bold uppercase tracking-wider mb-2">
+                <Sparkles className="w-4 h-4" /> Você Sabia?
+              </div>
+              <p className={`text-base sm:text-lg font-medium leading-relaxed opacity-95 ${fontClass}`}>
+                {curiosity.didYouKnow}
+              </p>
+            </div>
+          )}
+
+          {/* Source Link */}
+          <div className="pt-6 mt-8 border-t border-current/10 text-xs opacity-70 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+            <div>
+              <span className="font-bold">Referência: </span>
+              <span>{curiosity.sourceName}</span>
+            </div>
+            {curiosity.sourceUrl && (
+              <a
+                href={curiosity.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline font-medium hover:opacity-100 flex items-center gap-1"
+              >
+                Ver fonte original <ExternalLink className="w-3 h-3" />
+              </a>
+            )}
+          </div>
+
+          {/* Exit / Return Footer */}
+          <div className="mt-16 pt-10 text-center border-t border-current/10">
+            <p className="text-xs uppercase tracking-widest opacity-50 mb-3 font-semibold">
+              Fim da leitura
+            </p>
+            <button
+              onClick={onToggleReaderMode || onBack}
+              className="px-6 py-3 rounded-full bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-md transition-all active:scale-95 inline-flex items-center gap-2 cursor-pointer"
+            >
+              <Minimize2 className="w-4 h-4" /> Sair do Modo Leitura
+            </button>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  // ----------------------------------------------------
+  // STANDARD INTERACTIVE PORTAL VIEW
+  // ----------------------------------------------------
   return (
     <div className="py-8 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 animate-in fade-in duration-300">
       {/* Top Navigation Row */}
-      <div className="flex items-center justify-between gap-4 mb-6">
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
         <button
           onClick={onBack}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700 text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700 text-xs font-semibold transition-colors cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" /> Voltar
         </button>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Modo Leitura Action Button */}
+          {onToggleReaderMode && (
+            <button
+              onClick={() => {
+                playPopSound();
+                onToggleReaderMode();
+              }}
+              className="p-2 sm:px-3.5 sm:py-2 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300/70 dark:border-amber-700/60 text-amber-900 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/60 transition-all flex items-center gap-1.5 text-xs font-bold shadow-xs active:scale-95 cursor-pointer"
+              title="Ativar Modo Leitura (Sem distrações)"
+            >
+              <BookOpen className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+              <span className="hidden sm:inline">Modo Leitura</span>
+            </button>
+          )}
+
           <button
             onClick={() => onToggleFavorite(curiosity.slug)}
-            className={`p-2.5 rounded-xl border transition-colors flex items-center gap-1.5 text-xs font-semibold ${
+            className={`p-2.5 rounded-xl border transition-colors flex items-center gap-1.5 text-xs font-semibold cursor-pointer ${
               isFav
                 ? 'bg-red-50 dark:bg-red-950/40 border-red-200 text-red-500'
                 : 'bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800 text-neutral-600 dark:text-neutral-400 hover:text-red-500'
@@ -107,7 +287,7 @@ export const CuriosityDetailView: React.FC<CuriosityDetailViewProps> = ({
 
           <button
             onClick={() => onOpenShare(curiosity)}
-            className="p-2.5 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-neutral-600 dark:text-neutral-400 hover:text-amber-500 transition-colors flex items-center gap-1.5 text-xs font-semibold"
+            className="p-2.5 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-neutral-600 dark:text-neutral-400 hover:text-amber-500 transition-colors flex items-center gap-1.5 text-xs font-semibold cursor-pointer"
           >
             <Share2 className="w-4 h-4" />
             <span className="hidden sm:inline">Compartilhar</span>
@@ -115,7 +295,7 @@ export const CuriosityDetailView: React.FC<CuriosityDetailViewProps> = ({
 
           <button
             onClick={onTriggerRandom}
-            className="p-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm hover:shadow-md transition-all active:scale-95"
+            className="p-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm hover:shadow-md transition-all active:scale-95 cursor-pointer"
             title="Próxima curiosidade aleatória"
           >
             <Dice5 className="w-4 h-4" />
@@ -225,7 +405,7 @@ export const CuriosityDetailView: React.FC<CuriosityDetailViewProps> = ({
           <div className="flex flex-wrap items-center gap-2 justify-center sm:justify-start">
             <button
               onClick={() => handleReaction('mind_blown')}
-              className={`px-4 py-2.5 rounded-2xl border text-xs font-bold flex items-center gap-2 transition-all ${
+              className={`px-4 py-2.5 rounded-2xl border text-xs font-bold flex items-center gap-2 transition-all cursor-pointer ${
                 selectedReaction === 'mind_blown'
                   ? 'bg-purple-500 text-white border-purple-500 shadow-md scale-105'
                   : 'bg-neutral-50 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 border-neutral-200 dark:border-neutral-700 hover:border-purple-400'
@@ -236,7 +416,7 @@ export const CuriosityDetailView: React.FC<CuriosityDetailViewProps> = ({
 
             <button
               onClick={() => handleReaction('loved')}
-              className={`px-4 py-2.5 rounded-2xl border text-xs font-bold flex items-center gap-2 transition-all ${
+              className={`px-4 py-2.5 rounded-2xl border text-xs font-bold flex items-center gap-2 transition-all cursor-pointer ${
                 selectedReaction === 'loved'
                   ? 'bg-red-500 text-white border-red-500 shadow-md scale-105'
                   : 'bg-neutral-50 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 border-neutral-200 dark:border-neutral-700 hover:border-red-400'
@@ -247,7 +427,7 @@ export const CuriosityDetailView: React.FC<CuriosityDetailViewProps> = ({
 
             <button
               onClick={() => handleReaction('didnt_know')}
-              className={`px-4 py-2.5 rounded-2xl border text-xs font-bold flex items-center gap-2 transition-all ${
+              className={`px-4 py-2.5 rounded-2xl border text-xs font-bold flex items-center gap-2 transition-all cursor-pointer ${
                 selectedReaction === 'didnt_know'
                   ? 'bg-amber-500 text-white border-amber-500 shadow-md scale-105'
                   : 'bg-neutral-50 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 border-neutral-200 dark:border-neutral-700 hover:border-amber-400'
@@ -285,7 +465,7 @@ export const CuriosityDetailView: React.FC<CuriosityDetailViewProps> = ({
 
           <button
             onClick={onTriggerRandom}
-            className="text-xs font-bold text-amber-600 dark:text-amber-400 hover:underline flex items-center gap-1"
+            className="text-xs font-bold text-amber-600 dark:text-amber-400 hover:underline flex items-center gap-1 cursor-pointer"
           >
             Fato Aleatório <ArrowRight className="w-3.5 h-3.5" />
           </button>
@@ -334,3 +514,4 @@ export const CuriosityDetailView: React.FC<CuriosityDetailViewProps> = ({
     </div>
   );
 };
+
