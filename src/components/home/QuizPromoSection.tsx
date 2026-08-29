@@ -1,7 +1,8 @@
 import React from 'react';
-import { HelpCircle, Trophy, Sparkles, ArrowRight, Play, Users, Award } from 'lucide-react';
+import { HelpCircle, Trophy, Sparkles, ArrowRight, Play } from 'lucide-react';
 import { Quiz } from '../../types';
 import { ALL_QUIZZES } from '../../data/allCuriosities';
+import { ImageWithFallback } from '../common/ImageWithFallback';
 
 interface QuizPromoSectionProps {
   onSelectQuiz: (quiz: Quiz) => void;
@@ -27,7 +28,7 @@ export const QuizPromoSection: React.FC<QuizPromoSectionProps> = ({
               Teste o que você realmente sabe sobre o mundo
             </h2>
             <p className="text-xs sm:text-sm text-neutral-300 mt-1.5 max-w-xl">
-              Responda a quizzes temáticos rápidos, acumule pontos de experiência (XP), suba no ranking global e ganhe medalhas exclusivas.
+              Responda a quizzes temáticos rápidos com imagens fascinantes, acumule pontos de experiência (XP) e suba no ranking.
             </p>
           </div>
 
@@ -39,40 +40,53 @@ export const QuizPromoSection: React.FC<QuizPromoSectionProps> = ({
           </button>
         </div>
 
-        {/* Quizzes Cards Grid */}
+        {/* Quizzes Cards Grid with Photos */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative z-10">
           {ALL_QUIZZES.map(quiz => (
             <div
               key={quiz.id}
               onClick={() => onSelectQuiz(quiz)}
-              className="group bg-white/5 hover:bg-white/10 backdrop-blur-md border border-white/10 hover:border-purple-400/60 rounded-2xl p-5 cursor-pointer transition-all duration-200 hover:-translate-y-1 flex flex-col justify-between"
+              className="group bg-white/5 hover:bg-white/10 backdrop-blur-md border border-white/10 hover:border-purple-400/60 rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between shadow-md"
             >
               <div>
-                <div className="flex items-center justify-between gap-2 mb-3">
-                  <span className={`text-[10px] uppercase font-extrabold px-2 py-0.5 rounded-md ${
-                    quiz.difficulty === 'Fácil'
-                      ? 'bg-emerald-500/20 text-emerald-300'
-                      : quiz.difficulty === 'Médio'
-                      ? 'bg-amber-500/20 text-amber-300'
-                      : 'bg-red-500/20 text-red-300'
-                  }`}>
-                    {quiz.difficulty}
-                  </span>
+                {/* Quiz Photo Thumbnail Banner */}
+                <div className="relative h-32 w-full overflow-hidden">
+                  <ImageWithFallback
+                    src={quiz.imageUrl}
+                    alt={quiz.title}
+                    category={quiz.categoryId}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-black/30" />
 
-                  <span className="flex items-center gap-1 text-[10px] text-amber-400 font-bold">
-                    <Sparkles className="w-3 h-3" /> +{quiz.xpReward} XP
-                  </span>
+                  <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between gap-2">
+                    <span className={`text-[10px] uppercase font-extrabold px-2 py-0.5 rounded-md backdrop-blur-md ${
+                      quiz.difficulty === 'Fácil'
+                        ? 'bg-emerald-500/80 text-white'
+                        : quiz.difficulty === 'Médio'
+                        ? 'bg-amber-500/80 text-white'
+                        : 'bg-red-500/80 text-white'
+                    }`}>
+                      {quiz.difficulty}
+                    </span>
+
+                    <span className="flex items-center gap-1 text-[10px] text-amber-300 font-bold px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-md border border-white/10">
+                      <Sparkles className="w-3 h-3 text-amber-400" /> +{quiz.xpReward} XP
+                    </span>
+                  </div>
                 </div>
 
-                <h3 className="text-sm font-bold text-white group-hover:text-purple-300 transition-colors leading-snug mb-1.5">
-                  {quiz.title}
-                </h3>
-                <p className="text-[11px] text-neutral-300 line-clamp-2 leading-relaxed mb-4">
-                  {quiz.description}
-                </p>
+                <div className="p-4">
+                  <h3 className="text-sm font-bold text-white group-hover:text-purple-300 transition-colors leading-snug mb-1.5 line-clamp-2">
+                    {quiz.title}
+                  </h3>
+                  <p className="text-[11px] text-neutral-300 line-clamp-2 leading-relaxed">
+                    {quiz.description}
+                  </p>
+                </div>
               </div>
 
-              <div className="pt-3 border-t border-white/10 flex items-center justify-between text-[11px] text-neutral-400 font-medium">
+              <div className="px-4 pb-4 pt-2 border-t border-white/10 flex items-center justify-between text-[11px] text-neutral-400 font-medium">
                 <span className="flex items-center gap-1">
                   <HelpCircle className="w-3.5 h-3.5 text-purple-400" /> {quiz.questions.length} perguntas
                 </span>

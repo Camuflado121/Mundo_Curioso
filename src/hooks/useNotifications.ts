@@ -18,45 +18,45 @@ const SEED_NOTIFICATIONS: AppNotification[] = [
   {
     id: 'notif_seed_1',
     title: 'Novo Fato Científico Publicado!',
-    message: 'Flamingos: Os pássaros que bebem água quase fervendo e filtram comida de cabeça para baixo.',
+    message: 'O Soco do Camarão-Mantis: O golpe subaquático com a aceleração de uma bala de revólver que gera luz e calor.',
     type: 'curiosity',
-    targetSlug: 'os-flamingos-bebem-agua-fervendo-e-comem-com-a-cabeca-para-baixo',
+    targetSlug: 'o-soco-do-camarao-mantis-luz-e-calor-do-sol',
     targetType: 'curiosity',
     timestamp: new Date(Date.now() - 1000 * 60 * 25).toISOString(), // 25 min ago
     isRead: false,
-    imageUrl: 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=400&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=400&q=80',
     categoryName: 'Animais & Natureza'
   },
   {
     id: 'notif_seed_2',
     title: 'Curiosidade do Dia em Destaque 🌟',
-    message: 'A Batalha das Laranjas em Ivrea: A maior guerra gastronômica com 500 toneladas de frutas.',
+    message: '55 Cancri e: O exoplaneta rochoso duas vezes maior que a Terra composto por diamante maciço.',
     type: 'daily',
-    targetSlug: 'a-batalha-das-laranjas-de-ivrea-na-italia',
+    targetSlug: '55-cancri-e-o-exoplaneta-de-diamante-macico',
     targetType: 'curiosity',
     timestamp: new Date(Date.now() - 1000 * 60 * 120).toISOString(), // 2h ago
     isRead: false,
-    imageUrl: 'https://images.unsplash.com/photo-1547517023-7ca0c162fbd1?auto=format&fit=crop&w=400&q=80',
-    categoryName: 'Idiomas & Cultura'
+    imageUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=400&q=80',
+    categoryName: 'Espaço & Universo'
   },
   {
     id: 'notif_seed_3',
     title: 'Dossiê Especial Disponível 📚',
-    message: 'O Império de Gaza e Ngungunhane: A Resistência Épica que Sacudiu Moçambique.',
+    message: 'O Mistério da Matéria Escura: A força invisível que molda 85% do Cosmos.',
     type: 'article',
-    targetSlug: 'o-imperio-de-gaza-e-ngungunhane-a-resistencia-epica',
+    targetSlug: 'o-misterio-da-materia-escura-e-a-estrutura-do-cosmos',
     targetType: 'article',
     timestamp: new Date(Date.now() - 1000 * 60 * 60 * 6).toISOString(), // 6h ago
     isRead: false,
-    imageUrl: 'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=400&q=80',
-    categoryName: 'História & Civilizações'
+    imageUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=400&q=80',
+    categoryName: 'Ciência & Física'
   },
   {
     id: 'notif_seed_4',
     title: 'Novo Desafio: Quiz do Universo 🚀',
     message: 'Teste seus conhecimentos sobre o Cosmos, Buracos Negros e Estrelas de Nêutrons.',
     type: 'quiz',
-    targetSlug: 'quiz-astronomia-cosmos',
+    targetSlug: 'quiz-astronomia-cosmos-extremo',
     targetType: 'quiz',
     timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(), // 1 day ago
     isRead: true,
@@ -65,15 +65,15 @@ const SEED_NOTIFICATIONS: AppNotification[] = [
   },
   {
     id: 'notif_seed_5',
-    title: 'História da Medicina Revelada 🌿',
-    message: 'A casca de salgueiro e a Aspirina: Como um papiro egípcio inspirou a farmacologia moderna.',
+    title: 'Patrimônio de Moçambique Revelado 🇲🇿',
+    message: 'A Dança Mapiko e a Arte Maconde: A máscara sagrada de Moçambique que é Património da UNESCO.',
     type: 'curiosity',
-    targetSlug: 'como-a-aspirina-surgiu-da-casca-do-salgueiro-ha-3500-anos',
+    targetSlug: 'a-danca-mapiko-e-a-arte-maconde-de-mocambique',
     targetType: 'curiosity',
     timestamp: new Date(Date.now() - 1000 * 60 * 60 * 36).toISOString(), // 1.5 days ago
     isRead: true,
-    imageUrl: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=400&q=80',
-    categoryName: 'Corpo Humano & Saúde'
+    imageUrl: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=400&q=80',
+    categoryName: 'Moçambique & África'
   }
 ];
 

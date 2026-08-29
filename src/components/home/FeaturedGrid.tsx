@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { Curiosity } from '../../types';
 import { AdBanner } from '../common/AdBanner';
+import { ImageWithFallback } from '../common/ImageWithFallback';
 
 interface FeaturedGridProps {
   curiosities: Curiosity[];
@@ -135,12 +136,11 @@ export const FeaturedGrid: React.FC<FeaturedGridProps> = ({
               <article className="group bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 hover:border-amber-400 dark:hover:border-amber-600 rounded-3xl overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
                 {/* Image Header with Badge */}
                 <div className="relative aspect-16/10 overflow-hidden cursor-pointer" onClick={() => onSelectCuriosity(item)}>
-                  <img
+                  <ImageWithFallback
                     src={item.imageUrl}
                     alt={item.title}
+                    category={item.categoryId}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    loading="lazy"
-                    referrerPolicy="no-referrer"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 

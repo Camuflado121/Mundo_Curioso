@@ -2,6 +2,7 @@ import React from 'react';
 import { Sparkles, ArrowRight } from 'lucide-react';
 import { ALL_CATEGORIES } from '../../data/allCuriosities';
 import { IconHelper } from '../common/IconHelper';
+import { ImageWithFallback } from '../common/ImageWithFallback';
 
 interface CategoriesGridProps {
   onSelectCategory: (categorySlug: string) => void;
@@ -20,29 +21,47 @@ export const CategoriesGrid: React.FC<CategoriesGridProps> = ({ onSelectCategory
           </h2>
         </div>
         <p className="text-xs text-neutral-500 dark:text-neutral-400 max-w-md">
-          Explore acervos selecionados e descubra fatos fascinantes organizados por área temática.
+          Explore acervos selecionados com imagens em alta resolução e fatos fascinantes organizados por área temática.
         </p>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5 sm:gap-4">
         {ALL_CATEGORIES.map(cat => (
           <button
             key={cat.id}
             onClick={() => onSelectCategory(cat.slug)}
-            className="group relative bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 hover:border-amber-400 dark:hover:border-amber-600 rounded-2xl p-4 text-left transition-all duration-200 hover:-translate-y-1 hover:shadow-lg flex flex-col justify-between"
+            className="group relative h-48 rounded-2xl overflow-hidden text-left transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl border border-neutral-200/80 dark:border-neutral-800 flex flex-col justify-end p-4"
           >
-            <div>
-              <div className="w-10 h-10 rounded-xl bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 group-hover:bg-amber-500 group-hover:text-white transition-colors flex items-center justify-center mb-3">
-                <IconHelper name={cat.icon} className="w-5 h-5" />
-              </div>
-              <h3 className="text-xs sm:text-sm font-bold text-neutral-900 dark:text-white group-hover:text-amber-500 transition-colors leading-tight mb-1">
-                {cat.name}
-              </h3>
+            {/* Background Cover Image with Fallback */}
+            <div className="absolute inset-0 z-0">
+              <ImageWithFallback
+                src={cat.coverImage}
+                alt={cat.name}
+                category={cat.slug}
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/95 via-neutral-950/60 to-neutral-950/20 group-hover:from-neutral-950/90 transition-colors" />
             </div>
 
-            <div className="flex items-center justify-between mt-3 pt-2 border-t border-neutral-100 dark:border-neutral-800 text-[10px] text-neutral-400">
-              <span>{cat.count} fatos</span>
-              <ArrowRight className="w-3 h-3 group-hover:translate-x-1 group-hover:text-amber-500 transition-all" />
+            {/* Top Icon Badge */}
+            <div className="relative z-10 mb-auto flex items-center justify-between w-full">
+              <div className="w-9 h-9 rounded-xl bg-white/20 dark:bg-black/40 backdrop-blur-md text-white border border-white/20 flex items-center justify-center shadow-sm group-hover:bg-amber-500 group-hover:border-amber-400 transition-colors">
+                <IconHelper name={cat.icon} className="w-4 h-4" />
+              </div>
+              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/15 backdrop-blur-md text-white/90 border border-white/10">
+                {cat.count} fatos
+              </span>
+            </div>
+
+            {/* Bottom Category Info */}
+            <div className="relative z-10 mt-2">
+              <h3 className="text-sm font-bold text-white group-hover:text-amber-300 transition-colors leading-snug line-clamp-2">
+                {cat.name}
+              </h3>
+              <div className="flex items-center gap-1 mt-1 text-[11px] text-neutral-300 group-hover:text-amber-200 font-medium">
+                <span>Explorar</span>
+                <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+              </div>
             </div>
           </button>
         ))}

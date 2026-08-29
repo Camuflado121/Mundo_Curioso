@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Search, X, Sparkles, ArrowRight, Tag } from 'lucide-react';
 import { Curiosity } from '../../types';
 import { ALL_CURIOSITIES } from '../../data/allCuriosities';
+import { ImageWithFallback } from './ImageWithFallback';
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -119,11 +120,11 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, onSel
                 className="group flex items-center justify-between p-3 rounded-2xl border border-neutral-100 dark:border-neutral-800/80 hover:border-amber-400 dark:hover:border-amber-600 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 cursor-pointer transition-all"
               >
                 <div className="flex items-center gap-3 overflow-hidden">
-                  <img
+                  <ImageWithFallback
                     src={item.imageUrl}
                     alt={item.title}
+                    category={item.categoryId}
                     className="w-12 h-12 rounded-xl object-cover shrink-0"
-                    referrerPolicy="no-referrer"
                   />
                   <div className="overflow-hidden">
                     <span className="text-[10px] font-bold text-amber-500 uppercase tracking-wider block">

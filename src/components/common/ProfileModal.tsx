@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { X, Trophy, Flame, Sparkles, BookMarked, History, Award, Trash2 } from 'lucide-react';
 import { UserStats, Curiosity } from '../../types';
 import { ALL_CURIOSITIES } from '../../data/allCuriosities';
+import { ImageWithFallback } from './ImageWithFallback';
 
 interface ProfileModalProps {
   stats: UserStats;
@@ -140,11 +141,11 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
                   }}
                 >
                   <div className="flex items-center gap-3 overflow-hidden">
-                    <img
+                    <ImageWithFallback
                       src={item.imageUrl}
                       alt={item.title}
+                      category={item.categoryId}
                       className="w-12 h-12 rounded-xl object-cover shrink-0"
-                      referrerPolicy="no-referrer"
                     />
                     <div className="overflow-hidden">
                       <span className="text-[10px] font-bold text-amber-500 uppercase tracking-wider block">
@@ -236,11 +237,11 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
                     onClose();
                   }}
                 >
-                  <img
+                  <ImageWithFallback
                     src={item.imageUrl}
                     alt={item.title}
+                    category={item.categoryId}
                     className="w-10 h-10 rounded-xl object-cover shrink-0"
-                    referrerPolicy="no-referrer"
                   />
                   <div className="overflow-hidden grow">
                     <span className="text-[10px] text-amber-500 font-semibold uppercase">

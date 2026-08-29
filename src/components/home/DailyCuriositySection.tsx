@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Sparkles, Calendar, ArrowRight, Heart, Share2, Lightbulb, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Curiosity } from '../../types';
 import { DID_YOU_KNOW_FAST_FACTS } from '../../data/initialData';
+import { ImageWithFallback } from '../common/ImageWithFallback';
 
 interface DailyCuriositySectionProps {
   dailyCuriosity: Curiosity;
@@ -67,11 +68,11 @@ export const DailyCuriositySection: React.FC<DailyCuriositySectionProps> = ({
             </div>
 
             <div className="flex flex-col sm:flex-row gap-5 items-start sm:items-center mb-4">
-              <img
+              <ImageWithFallback
                 src={dailyCuriosity.imageUrl}
                 alt={dailyCuriosity.title}
+                category={dailyCuriosity.categoryId}
                 className="w-full sm:w-36 h-36 rounded-2xl object-cover shadow-md shrink-0"
-                referrerPolicy="no-referrer"
               />
               <div>
                 <span className="text-[11px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider block">

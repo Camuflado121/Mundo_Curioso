@@ -2,6 +2,7 @@ import React from 'react';
 import { BookOpen, ArrowLeft, Clock, Eye, ArrowRight } from 'lucide-react';
 import { SpecialArticle } from '../../types';
 import { ALL_ARTICLES } from '../../data/allCuriosities';
+import { ImageWithFallback } from '../common/ImageWithFallback';
 
 interface ArticlesListViewProps {
   onBack: () => void;
@@ -43,11 +44,10 @@ export const ArticlesListView: React.FC<ArticlesListViewProps> = ({ onBack, onSe
           >
             <div>
               <div className="relative aspect-16/10 overflow-hidden">
-                <img
+                <ImageWithFallback
                   src={article.imageUrl}
                   alt={article.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  referrerPolicy="no-referrer"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                 <span className="absolute bottom-3 left-3 text-[10px] uppercase font-black tracking-wider text-white bg-blue-600 px-2.5 py-0.5 rounded-full">

@@ -13,6 +13,7 @@ import { SpecialArticle } from '../../types';
 import { AdBanner } from '../common/AdBanner';
 import { CommentsSection } from '../common/CommentsSection';
 import { playPopSound } from '../../utils/audio';
+import { ImageWithFallback } from '../common/ImageWithFallback';
 import {
   ReaderToolbar,
   ReaderFontSize,
@@ -225,11 +226,10 @@ export const ArticleDetailView: React.FC<ArticleDetailViewProps> = ({
         </div>
 
         <div className="relative aspect-16/9 rounded-2xl overflow-hidden mb-8 shadow-lg">
-          <img
+          <ImageWithFallback
             src={article.imageUrl}
             alt={article.title}
             className="w-full h-full object-cover"
-            referrerPolicy="no-referrer"
           />
         </div>
 

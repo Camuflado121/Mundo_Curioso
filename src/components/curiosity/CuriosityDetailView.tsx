@@ -25,6 +25,7 @@ import { getRelatedCuriosities } from '../../data/allCuriosities';
 import { AdBanner } from '../common/AdBanner';
 import { playPopSound } from '../../utils/audio';
 import { CommentsSection } from '../common/CommentsSection';
+import { ImageWithFallback } from '../common/ImageWithFallback';
 import {
   ReaderToolbar,
   ReaderFontSize,
@@ -341,11 +342,11 @@ export const CuriosityDetailView: React.FC<CuriosityDetailViewProps> = ({
 
         {/* Hero Image */}
         <div className="relative aspect-16/9 rounded-2xl overflow-hidden mb-8 shadow-lg">
-          <img
+          <ImageWithFallback
             src={curiosity.imageUrl}
             alt={curiosity.title}
+            category={curiosity.categoryId}
             className="w-full h-full object-cover"
-            referrerPolicy="no-referrer"
           />
         </div>
 
@@ -480,11 +481,11 @@ export const CuriosityDetailView: React.FC<CuriosityDetailViewProps> = ({
             >
               <div>
                 <div className="aspect-16/10 overflow-hidden relative">
-                  <img
+                  <ImageWithFallback
                     src={item.imageUrl}
                     alt={item.title}
+                    category={item.categoryId}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    referrerPolicy="no-referrer"
                   />
                   <span className="absolute top-2.5 left-2.5 text-[9px] font-bold uppercase tracking-wider bg-neutral-900/80 text-white px-2 py-0.5 rounded-full">
                     {item.categoryName}

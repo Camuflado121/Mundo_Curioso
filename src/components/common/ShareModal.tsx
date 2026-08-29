@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { X, Check, Copy, Share2, Send } from 'lucide-react';
 import { Curiosity } from '../../types';
 import { playSuccessChime } from '../../utils/audio';
+import { ImageWithFallback } from './ImageWithFallback';
 
 interface ShareModalProps {
   curiosity: Curiosity;
@@ -70,11 +71,11 @@ export const ShareModal: React.FC<ShareModalProps> = ({ curiosity, isOpen, onClo
 
         {/* Preview Card */}
         <div className="bg-neutral-50 dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-800 rounded-2xl p-4 mb-6 flex items-center gap-4">
-          <img
+          <ImageWithFallback
             src={curiosity.imageUrl}
             alt={curiosity.title}
+            category={curiosity.categoryId}
             className="w-16 h-16 rounded-xl object-cover shrink-0"
-            referrerPolicy="no-referrer"
           />
           <div className="overflow-hidden">
             <span className="text-[10px] font-bold text-amber-500 uppercase tracking-wider block">

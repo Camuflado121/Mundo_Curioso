@@ -18,6 +18,7 @@ import confetti from 'canvas-confetti';
 import { Quiz } from '../../types';
 import { playSuccessChime, playWrongChime, playLevelUpFanfare, playPopSound } from '../../utils/audio';
 import { QuizPerfectScoreModal } from './QuizPerfectScoreModal';
+import { ImageWithFallback } from '../common/ImageWithFallback';
 
 interface QuizPlayViewProps {
   quiz: Quiz;
@@ -335,16 +336,34 @@ export const QuizPlayView: React.FC<QuizPlayViewProps> = ({
       </button>
 
       {/* Main Card */}
-      <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-3xl p-6 sm:p-10 shadow-xl">
-        {/* Progress header */}
-        <div className="flex items-center justify-between gap-4 mb-4">
-          <span className="text-xs font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400">
-            Questão {currentQuestionIndex + 1} de {quiz.questions.length}
-          </span>
-          <span className="text-xs font-bold text-amber-500 flex items-center gap-1">
-            <Sparkles className="w-3.5 h-3.5" /> +{quiz.xpReward} XP em jogo
-          </span>
+      <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-3xl overflow-hidden shadow-xl">
+        {/* Quiz Photo Mini-Banner */}
+        <div className="relative h-28 sm:h-36 w-full overflow-hidden">
+          <ImageWithFallback
+            src={quiz.imageUrl}
+            alt={quiz.title}
+            category={quiz.categoryId}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-neutral-900/90 via-neutral-900/40 to-transparent" />
+          <div className="absolute bottom-3 left-6 right-6 flex items-center justify-between text-white text-xs font-bold">
+            <span className="truncate">{quiz.title}</span>
+            <span className="px-2 py-0.5 rounded-full bg-purple-500/80 backdrop-blur-md text-[10px] uppercase shrink-0">
+              {quiz.difficulty}
+            </span>
+          </div>
         </div>
+
+        <div className="p-6 sm:p-10">
+          {/* Progress header */}
+          <div className="flex items-center justify-between gap-4 mb-4">
+            <span className="text-xs font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400">
+              Questão {currentQuestionIndex + 1} de {quiz.questions.length}
+            </span>
+            <span className="text-xs font-bold text-amber-500 flex items-center gap-1">
+              <Sparkles className="w-3.5 h-3.5" /> +{quiz.xpReward} XP em jogo
+            </span>
+          </div>
 
         {/* Progress Bar */}
         <div className="w-full h-2 bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden mb-8">
@@ -434,6 +453,7 @@ export const QuizPlayView: React.FC<QuizPlayViewProps> = ({
               {isLastQuestion ? 'Ver Resultado Final' : 'Próxima Pergunta'} <ArrowRight className="w-4 h-4" />
             </button>
           )}
+        </div>
         </div>
       </div>
     </div>

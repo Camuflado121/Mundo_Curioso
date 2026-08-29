@@ -2,6 +2,7 @@ import React from 'react';
 import { HelpCircle, Trophy, Sparkles, Play, ArrowLeft } from 'lucide-react';
 import { Quiz } from '../../types';
 import { ALL_QUIZZES } from '../../data/allCuriosities';
+import { ImageWithFallback } from '../common/ImageWithFallback';
 
 interface QuizHubViewProps {
   onBack: () => void;
@@ -33,40 +34,53 @@ export const QuizHubView: React.FC<QuizHubViewProps> = ({ onBack, onSelectQuiz }
         </div>
       </div>
 
-      {/* Quizzes List */}
+      {/* Quizzes List with Photos */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {ALL_QUIZZES.map(quiz => (
           <div
             key={quiz.id}
             onClick={() => onSelectQuiz(quiz)}
-            className="group bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 hover:border-purple-400 dark:hover:border-purple-600 rounded-3xl p-6 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between cursor-pointer"
+            className="group bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 hover:border-purple-400 dark:hover:border-purple-600 rounded-3xl overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between cursor-pointer"
           >
             <div>
-              <div className="flex items-center justify-between gap-2 mb-4">
-                <span className={`text-[10px] uppercase font-black px-2.5 py-0.5 rounded-full ${
-                  quiz.difficulty === 'Fácil'
-                    ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300'
-                    : quiz.difficulty === 'Médio'
-                    ? 'bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300'
-                    : 'bg-red-100 dark:bg-red-950/60 text-red-700 dark:text-red-300'
-                }`}>
-                  {quiz.difficulty}
-                </span>
+              {/* Quiz Cover Banner */}
+              <div className="relative h-44 w-full overflow-hidden">
+                <ImageWithFallback
+                  src={quiz.imageUrl}
+                  alt={quiz.title}
+                  category={quiz.categoryId}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-black/30" />
 
-                <span className="flex items-center gap-1 text-xs font-black text-amber-500">
-                  <Sparkles className="w-3.5 h-3.5" /> +{quiz.xpReward} XP
-                </span>
+                <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2">
+                  <span className={`text-[10px] uppercase font-black px-2.5 py-0.5 rounded-full backdrop-blur-md ${
+                    quiz.difficulty === 'Fácil'
+                      ? 'bg-emerald-500/80 text-white'
+                      : quiz.difficulty === 'Médio'
+                      ? 'bg-amber-500/80 text-white'
+                      : 'bg-red-500/80 text-white'
+                  }`}>
+                    {quiz.difficulty}
+                  </span>
+
+                  <span className="flex items-center gap-1 text-xs font-black text-amber-300 bg-black/60 backdrop-blur-md px-2.5 py-0.5 rounded-full border border-white/10">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-400" /> +{quiz.xpReward} XP
+                  </span>
+                </div>
               </div>
 
-              <h3 className="text-lg font-bold text-neutral-950 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors mb-2 leading-snug">
-                {quiz.title}
-              </h3>
-              <p className="text-xs text-neutral-600 dark:text-neutral-400 line-clamp-3 leading-relaxed mb-6">
-                {quiz.description}
-              </p>
+              <div className="p-6">
+                <h3 className="text-lg font-bold text-neutral-950 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors mb-2 leading-snug">
+                  {quiz.title}
+                </h3>
+                <p className="text-xs text-neutral-600 dark:text-neutral-400 line-clamp-3 leading-relaxed">
+                  {quiz.description}
+                </p>
+              </div>
             </div>
 
-            <div className="pt-4 border-t border-neutral-100 dark:border-neutral-800 flex items-center justify-between text-xs text-neutral-500 dark:text-neutral-400 font-semibold">
+            <div className="px-6 pb-6 pt-3 border-t border-neutral-100 dark:border-neutral-800 flex items-center justify-between text-xs text-neutral-500 dark:text-neutral-400 font-semibold">
               <span className="flex items-center gap-1.5">
                 <HelpCircle className="w-4 h-4 text-purple-500" /> {quiz.questions.length} perguntas
               </span>

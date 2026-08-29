@@ -14,6 +14,7 @@ import {
 import { Curiosity, Category, Quiz } from '../../types';
 import { ALL_CATEGORIES, ALL_QUIZZES } from '../../data/allCuriosities';
 import { IconHelper } from '../common/IconHelper';
+import { ImageWithFallback } from '../common/ImageWithFallback';
 
 interface CategoryPageViewProps {
   categorySlug: string;
@@ -159,11 +160,11 @@ export const CategoryPageView: React.FC<CategoryPageViewProps> = ({
                   className="relative aspect-16/10 overflow-hidden cursor-pointer"
                   onClick={() => onSelectCuriosity(item)}
                 >
-                  <img
+                  <ImageWithFallback
                     src={item.imageUrl}
                     alt={item.title}
+                    category={item.categoryId}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    referrerPolicy="no-referrer"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
