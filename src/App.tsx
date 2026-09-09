@@ -38,6 +38,8 @@ import { AdminDashboard } from './components/admin/AdminDashboard';
 import { AboutPage, ContactPage, PrivacyPage } from './components/pages/StaticPages';
 import { NotFoundPage } from './components/pages/NotFoundPage';
 import { AiAssistantModal } from './components/common/AiAssistantModal';
+import { NasaSpaceObservatory } from './components/nasa/NasaSpaceObservatory';
+import { NasaLiveSection } from './components/nasa/NasaLiveSection';
 
 import { playPopSound, playLevelUpFanfare } from './utils/audio';
 import { useAdminAuth } from './hooks/useAdminAuth';
@@ -52,6 +54,7 @@ type ViewMode =
   | 'quiz-play'
   | 'articles-list'
   | 'article-detail'
+  | 'nasa-observatory'
   | 'admin'
   | 'about'
   | 'contact'
@@ -391,6 +394,10 @@ export default function App() {
             setCurrentView('articles-list');
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
+          onNavigateNasaObservatory={() => {
+            setCurrentView('nasa-observatory');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
           onNavigateAdmin={() => {
             if (isAdmin) {
               setCurrentView('admin');
@@ -434,6 +441,7 @@ export default function App() {
               onOpenSearch={() => setIsSearchOpen(true)}
               onSelectCuriosity={handleSelectCuriosity}
               featuredCuriosity={curiosities[0] || ALL_CURIOSITIES[0]}
+              secondaryCuriosities={curiosities.slice(1, 3)}
             />
 
             {/* Daily Verified Curiosity Card */}
@@ -470,6 +478,14 @@ export default function App() {
               onOpenShare={item => setShareCuriosity(item)}
               onToggleFavorite={toggleFavorite}
               isFavorite={isFavorite}
+            />
+
+            {/* NASA Live Space Observatory Telemetry & APOD Card */}
+            <NasaLiveSection
+              onOpenObservatory={() => {
+                setCurrentView('nasa-observatory');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
             />
 
             {/* Gamified Quizzes Invitation Section */}
@@ -519,6 +535,10 @@ export default function App() {
             onOpenShare={item => setShareCuriosity(item)}
             onToggleFavorite={toggleFavorite}
             isFavorite={isFavorite}
+            onOpenNasaObservatory={() => {
+              setCurrentView('nasa-observatory');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
           />
         )}
 
@@ -560,6 +580,14 @@ export default function App() {
             adminName={adminUser?.name}
             isReaderMode={isReaderMode}
             onToggleReaderMode={() => setIsReaderMode(prev => !prev)}
+          />
+        )}
+
+        {currentView === 'nasa-observatory' && (
+          <NasaSpaceObservatory
+            onBack={navigateToHome}
+            onSelectCuriosity={handleSelectCuriosity}
+            spaceCuriosities={curiosities.filter(c => c.categoryId === 'espaco')}
           />
         )}
 
@@ -669,6 +697,9 @@ export default function App() {
               window.scrollTo({ top: 0, behavior: 'smooth' });
             } else if (view === 'artigos') {
               setCurrentView('articles-list');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else if (view === 'nasa' || view === 'observatorio') {
+              setCurrentView('nasa-observatory');
               window.scrollTo({ top: 0, behavior: 'smooth' });
             } else if (view === 'admin') {
               if (isAdmin) {

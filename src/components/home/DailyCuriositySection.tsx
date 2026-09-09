@@ -71,7 +71,7 @@ export const DailyCuriositySection: React.FC<DailyCuriositySectionProps> = ({
               <ImageWithFallback
                 src={dailyCuriosity.imageUrl}
                 alt={dailyCuriosity.title}
-                category={dailyCuriosity.categoryId}
+                categoryId={dailyCuriosity.categoryId}
                 className="w-full sm:w-36 h-36 rounded-2xl object-cover shadow-md shrink-0"
               />
               <div>

@@ -190,3 +190,55 @@ export interface NotificationPreferences {
   notifySpecialArticles: boolean;
 }
 
+export interface NasaApod {
+  date: string;
+  explanation: string;
+  hdurl?: string;
+  url: string;
+  media_type: 'image' | 'video' | string;
+  service_version?: string;
+  title: string;
+  copyright?: string;
+}
+
+export interface NasaAsteroid {
+  id: string;
+  name: string;
+  nasaJplUrl: string;
+  absoluteMagnitude: number;
+  estimatedDiameterMeters: {
+    min: number;
+    max: number;
+  };
+  isPotentiallyHazardous: boolean;
+  closeApproachDate: string;
+  velocityKmPerHour: number;
+  missDistanceKm: number;
+  missDistanceLunar: number;
+}
+
+export interface NasaEarthEpicImage {
+  id: string;
+  image: string;
+  caption: string;
+  date: string;
+  imageUrl: string;
+  coordinates?: {
+    lat: number;
+    lon: number;
+  };
+}
+
+export interface NasaSpaceOverview {
+  status: 'online' | 'offline';
+  timestamp: string;
+  apod: NasaApod;
+  recentApods?: NasaApod[];
+  asteroids: {
+    count: number;
+    closest: NasaAsteroid[];
+    hazardousCount: number;
+  };
+  earthEpic?: NasaEarthEpicImage;
+}
+

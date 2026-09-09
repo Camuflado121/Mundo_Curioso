@@ -10,13 +10,13 @@ let dynamicCuriosities: Curiosity[] = [...ALL_CURIOSITIES];
 let userSuggestions: CuriositySuggestion[] = [
   {
     id: 'sug-1',
-    title: 'O Lago Niassa e a maior variedade de peixes ciclídeos do planeta',
-    category: 'mocambique-africa',
-    description: 'O Lago Niassa (Malawi) em Moçambique abriga mais de 1.000 espécies endêmicas de ciclídeos que evoluíram mais rápido que os tentilhões de Darwin.',
-    source: 'WWF Mozambique Freshwater Conservation',
+    title: 'A bioluminescência sincronizada dos vagalumes das florestas de mangal',
+    category: 'animais',
+    description: 'Em mangais do sudeste asiático, milhares de vagalumes sincronizam seus flashes de luz em uníssono perfeito a cada segundo por quilômetros de margem de rio.',
+    source: 'Science Advances Bioluminescence',
     submitterName: 'Estevão Machava',
     submitterEmail: 'estevao.machava@gmail.com',
-    createdAt: '2026-08-24T10:30:00Z',
+    createdAt: '2026-09-08T10:30:00Z',
     status: 'pending'
   },
   {
@@ -27,7 +27,7 @@ let userSuggestions: CuriositySuggestion[] = [
     source: 'NOAA Severe Weather Science',
     submitterName: 'Juliana Paiva',
     submitterEmail: 'juliana.paiva@ufrj.br',
-    createdAt: '2026-08-24T14:15:00Z',
+    createdAt: '2026-09-08T14:15:00Z',
     status: 'approved'
   }
 ];
@@ -36,45 +36,45 @@ let commentsStore: Comment[] = [
   {
     id: 'com-1',
     curiosityId: 'c1',
-    curiosityTitle: 'O exoplaneta onde chove vidro derretido a 8.700 km/h (HD 189733b)',
+    curiosityTitle: 'PSO J318.5-22: O planeta solitário que vaga pelo vácuo cósmico sem nenhuma estrela',
     authorName: 'Rodrigo Astronomia',
     authorAvatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80',
-    content: 'HD 189733b é um dos meus exoplanetas favoritos! Imagine ventos 7 vezes mais rápidos que a velocidade do som!',
-    createdAt: '2026-08-21T09:20:00Z',
-    likes: 18,
+    content: 'Fascinante pensar em planetas errantes com nuvens de ferro líquido vagando sozinhos pelo espaço interestelar!',
+    createdAt: '2026-09-09T09:20:00Z',
+    likes: 28,
     isPinned: true,
     replies: [
       {
         id: 'rep-1',
         authorName: 'Pedro Rosário Gabriel (Admin)',
         authorAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80',
-        content: 'Fascinante mesmo, Rodrigo! As partículas de silicato na atmosfera dão a cor azul cobalto que lembra a Terra de longe.',
-        createdAt: '2026-08-21T10:05:00Z',
+        content: 'Impressionante mesmo, Rodrigo! E o mais incrível é que eles mantêm calor próprio devido à compressão gravitacional.',
+        createdAt: '2026-09-09T10:05:00Z',
         isAdmin: true,
-        likes: 7
+        likes: 12
       }
     ]
   },
   {
     id: 'com-2',
     curiosityId: 'c2',
-    curiosityTitle: 'Monte Namúli: O berço sagrado do povo Macua e ilha biológica',
+    curiosityTitle: 'O Laboratório Vivo do Lago Niassa: Onde 1.000 espécies de peixes evoluíram',
     authorName: 'Amélia Macamo',
     authorAvatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80',
-    content: 'Orgulho enorme de Moçambique e do Monte Namúli. As tradições orais preservaram esse patrimônio sagrado por gerações!',
-    createdAt: '2026-08-22T16:40:00Z',
-    likes: 24,
+    content: 'Orgulho imenso de Moçambique e do nosso Lago Niassa! A taxa de especiação dos ciclídeos é uma aula viva da biologia mundial.',
+    createdAt: '2026-09-09T11:40:00Z',
+    likes: 34,
     replies: []
   },
   {
     id: 'com-3',
     curiosityId: 'c3',
-    curiosityTitle: 'Por que o sangue dos polvos e lulas é azul e tem 3 corações?',
-    authorName: 'Lucas Biólogo',
+    curiosityTitle: 'Cristais de Tempo: A matéria quântica que oscila perpetuamente sem consumir energia',
+    authorName: 'Lucas Físico',
     authorAvatar: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=120&q=80',
-    content: 'A hemocianina com cobre é fascinante. A natureza encontrou soluções surpreendentes para a vida nos oceanos.',
-    createdAt: '2026-08-20T11:10:00Z',
-    likes: 12,
+    content: 'A quebra da simetria de translação temporal é uma das ideias mais elegantes que a física contemporânea já comprovou.',
+    createdAt: '2026-09-08T15:10:00Z',
+    likes: 19,
     replies: []
   }
 ];
@@ -944,6 +944,324 @@ async function startServer() {
       newsletterSubscribers.push(email.toLowerCase());
     }
     res.json({ success: true, message: 'Inscrição realizada com sucesso! Você receberá curiosidades diárias.' });
+  });
+
+  // === NASA OPEN API INTEGRATION (Space Observatory & Real-Time Astronomy) ===
+  const NASA_API_KEY = process.env.NASA_API_KEY || 'COzsD79yQU432je5M8A1zW02IM8EzgM9LiZf4wFR';
+
+  // In-memory cache for NASA data to protect rate limits and provide instant UI response
+  let nasaCache: {
+    timestamp: number;
+    overview: any | null;
+  } = {
+    timestamp: 0,
+    overview: null
+  };
+
+  const DEFAULT_FALLBACK_APOD = {
+    date: '2026-09-09',
+    title: 'Pilares da Criação no Infravermelho Profundo (Telescópio Espacial James Webb)',
+    explanation: 'Capturada pelos instrumentos NIRCam e MIRI do Telescópio Espacial James Webb, esta visão monumental dos Pilares da Criação na Nebulosa da Águia (M16) revela colunas colossais de gás interestelar frio e poeira cósmica onde novas estrelas estão nascendo a 6.500 anos-luz da Terra. As pontas avermelhadas e brilhantes são jatos de matéria expelidos por protoestrelas recém-formadas.',
+    url: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1600&q=80',
+    hdurl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=2400&q=80',
+    media_type: 'image',
+    copyright: 'NASA / ESA / CSA / STScI'
+  };
+
+  // 12.1 NASA APOD (Astronomy Picture of the Day)
+  app.get('/api/nasa/apod', async (req, res) => {
+    const { date, count } = req.query as { date?: string; count?: string };
+    try {
+      let url = `https://api.nasa.gov/planetary/apod?api_key=${NASA_API_KEY}`;
+      if (count) {
+        url += `&count=${Math.min(parseInt(count, 10) || 5, 10)}`;
+      } else if (date) {
+        url += `&date=${date}`;
+      }
+
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`NASA API returned status ${response.status}`);
+      }
+
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.warn('NASA APOD endpoint fallback triggered:', error);
+      if (count) {
+        res.json([
+          DEFAULT_FALLBACK_APOD,
+          {
+            date: '2026-09-08',
+            title: 'A Dança Galáctica de Stephan Quintet',
+            explanation: 'Cinco galáxias presas em uma coreografia gravitacional cósmica que comprime gás e gera milhões de novas estrelas.',
+            url: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=1200&q=80',
+            media_type: 'image',
+            copyright: 'NASA / JWST'
+          }
+        ]);
+      } else {
+        res.json(DEFAULT_FALLBACK_APOD);
+      }
+    }
+  });
+
+  // 12.2 NASA NeoWs (Near Earth Object Asteroid Radar Tracker)
+  app.get('/api/nasa/asteroids', async (req, res) => {
+    try {
+      const response = await fetch(`https://api.nasa.gov/neo/rest/v1/feed/today?detailed=true&api_key=${NASA_API_KEY}`);
+      if (!response.ok) {
+        throw new Error(`NASA NeoWs returned status ${response.status}`);
+      }
+
+      const data = await response.json();
+      const dates = Object.keys(data.near_earth_objects || {});
+      const rawAsteroids = dates.flatMap(d => data.near_earth_objects[d] || []);
+
+      const formattedAsteroids = rawAsteroids.map((ast: any) => {
+        const approach = ast.close_approach_data?.[0];
+        return {
+          id: ast.id,
+          name: ast.name,
+          nasaJplUrl: ast.nasa_jpl_url,
+          absoluteMagnitude: ast.absolute_magnitude_h,
+          estimatedDiameterMeters: {
+            min: Math.round(ast.estimated_diameter?.meters?.estimated_diameter_min || 0),
+            max: Math.round(ast.estimated_diameter?.meters?.estimated_diameter_max || 0)
+          },
+          isPotentiallyHazardous: !!ast.is_potentially_hazardous_asteroid,
+          closeApproachDate: approach?.close_approach_date_full || approach?.close_approach_date || 'Hoje',
+          velocityKmPerHour: Math.round(parseFloat(approach?.relative_velocity?.kilometers_per_hour || '0')),
+          missDistanceKm: Math.round(parseFloat(approach?.miss_distance?.kilometers || '0')),
+          missDistanceLunar: parseFloat(approach?.miss_distance?.lunar || '0')
+        };
+      });
+
+      // Sort by closest distance to Earth
+      formattedAsteroids.sort((a, b) => a.missDistanceKm - b.missDistanceKm);
+
+      res.json({
+        elementCount: data.element_count || formattedAsteroids.length,
+        hazardousCount: formattedAsteroids.filter(a => a.isPotentiallyHazardous).length,
+        asteroids: formattedAsteroids
+      });
+    } catch (error) {
+      console.warn('NASA Asteroids fallback triggered:', error);
+      res.json({
+        elementCount: 5,
+        hazardousCount: 0,
+        asteroids: [
+          {
+            id: 'ast-1',
+            name: '(2013 TG135)',
+            nasaJplUrl: 'https://ssd.jpl.nasa.gov/tools/sbdb_lookup.html#/?sstr=2013%20TG135',
+            absoluteMagnitude: 21.4,
+            estimatedDiameterMeters: { min: 24, max: 54 },
+            isPotentiallyHazardous: false,
+            closeApproachDate: 'Hoje às 07:12 UTC',
+            velocityKmPerHour: 47017,
+            missDistanceKm: 15999593,
+            missDistanceLunar: 41.6
+          },
+          {
+            id: 'ast-2',
+            name: '(2026 RC)',
+            nasaJplUrl: 'https://ssd.jpl.nasa.gov',
+            absoluteMagnitude: 25.1,
+            estimatedDiameterMeters: { min: 12, max: 28 },
+            isPotentiallyHazardous: false,
+            closeApproachDate: 'Hoje às 14:35 UTC',
+            velocityKmPerHour: 38240,
+            missDistanceKm: 8420100,
+            missDistanceLunar: 21.9
+          }
+        ]
+      });
+    }
+  });
+
+  // 12.3 NASA EPIC (Earth Polychromatic Imaging Camera from Deep Space)
+  app.get('/api/nasa/earth-epic', async (req, res) => {
+    try {
+      const response = await fetch(`https://api.nasa.gov/EPIC/api/natural?api_key=${NASA_API_KEY}`);
+      if (!response.ok) {
+        throw new Error(`NASA EPIC returned status ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (!Array.isArray(data) || data.length === 0) {
+        throw new Error('No EPIC images returned');
+      }
+
+      const latest = data[0];
+      const dateParts = latest.date.split(' ')[0].split('-');
+      const [year, month, day] = dateParts;
+      const imageUrl = `https://epic.gsfc.nasa.gov/archive/natural/${year}/${month}/${day}/jpg/${latest.image}.jpg`;
+
+      res.json({
+        id: latest.identifier || latest.image,
+        image: latest.image,
+        caption: latest.caption || "Fotografia do planeta Terra tirada pela câmera EPIC a bordo do satélite DSCOVR a 1,5 milhão de quilômetros no Ponto Lagrangeano L1.",
+        date: latest.date,
+        imageUrl,
+        coordinates: latest.centroid_coordinates ? {
+          lat: latest.centroid_coordinates.lat,
+          lon: latest.centroid_coordinates.lon
+        } : undefined
+      });
+    } catch (error) {
+      console.warn('NASA EPIC fallback triggered:', error);
+      res.json({
+        id: 'epic-fallback',
+        image: 'epic_earth_view',
+        caption: "Fotografia do planeta Terra tirada pela câmera EPIC a bordo do satélite DSCOVR a 1,5 milhão de quilômetros no Ponto Lagrangeano L1.",
+        date: '2026-09-07 12:00:00',
+        imageUrl: 'https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?auto=format&fit=crop&w=1600&q=80'
+      });
+    }
+  });
+
+  // 12.4 NASA Full Space Observatory Overview
+  app.get('/api/nasa/overview', async (req, res) => {
+    const now = Date.now();
+    // Use cache if under 5 minutes
+    if (nasaCache.overview && now - nasaCache.timestamp < 5 * 60 * 1000) {
+      return res.json(nasaCache.overview);
+    }
+
+    try {
+      const [apodRes, asteroidsRes, epicRes] = await Promise.allSettled([
+        fetch(`https://api.nasa.gov/planetary/apod?api_key=${NASA_API_KEY}`).then(r => r.json()),
+        fetch(`https://api.nasa.gov/neo/rest/v1/feed/today?detailed=true&api_key=${NASA_API_KEY}`).then(r => r.json()),
+        fetch(`https://api.nasa.gov/EPIC/api/natural?api_key=${NASA_API_KEY}`).then(r => r.json())
+      ]);
+
+      // Process APOD
+      let apod = apodRes.status === 'fulfilled' ? apodRes.value : DEFAULT_FALLBACK_APOD;
+      if (!apod || apod.error) apod = DEFAULT_FALLBACK_APOD;
+
+      // Process Asteroids
+      let asteroidsData: any = { count: 0, closest: [], hazardousCount: 0 };
+      if (asteroidsRes.status === 'fulfilled' && asteroidsRes.value?.near_earth_objects) {
+        const dates = Object.keys(asteroidsRes.value.near_earth_objects);
+        const raw = dates.flatMap(d => asteroidsRes.value.near_earth_objects[d] || []);
+        const formatted = raw.map((ast: any) => {
+          const app = ast.close_approach_data?.[0];
+          return {
+            id: ast.id,
+            name: ast.name,
+            nasaJplUrl: ast.nasa_jpl_url,
+            absoluteMagnitude: ast.absolute_magnitude_h,
+            estimatedDiameterMeters: {
+              min: Math.round(ast.estimated_diameter?.meters?.estimated_diameter_min || 0),
+              max: Math.round(ast.estimated_diameter?.meters?.estimated_diameter_max || 0)
+            },
+            isPotentiallyHazardous: !!ast.is_potentially_hazardous_asteroid,
+            closeApproachDate: app?.close_approach_date_full || app?.close_approach_date || 'Hoje',
+            velocityKmPerHour: Math.round(parseFloat(app?.relative_velocity?.kilometers_per_hour || '0')),
+            missDistanceKm: Math.round(parseFloat(app?.miss_distance?.kilometers || '0')),
+            missDistanceLunar: parseFloat(app?.miss_distance?.lunar || '0')
+          };
+        }).sort((a, b) => a.missDistanceKm - b.missDistanceKm);
+
+        asteroidsData = {
+          count: asteroidsRes.value.element_count || formatted.length,
+          closest: formatted.slice(0, 5),
+          hazardousCount: formatted.filter(a => a.isPotentiallyHazardous).length
+        };
+      }
+
+      // Process EPIC Earth
+      let earthEpic: any = undefined;
+      if (epicRes.status === 'fulfilled' && Array.isArray(epicRes.value) && epicRes.value.length > 0) {
+        const item = epicRes.value[0];
+        const [year, month, day] = item.date.split(' ')[0].split('-');
+        earthEpic = {
+          id: item.identifier || item.image,
+          image: item.image,
+          caption: "Fotografia do planeta Terra tirada a 1,5 milhão de km pelo satélite DSCOVR da NASA.",
+          date: item.date,
+          imageUrl: `https://epic.gsfc.nasa.gov/archive/natural/${year}/${month}/${day}/jpg/${item.image}.jpg`
+        };
+      }
+
+      const overviewPayload = {
+        status: 'online',
+        timestamp: new Date().toISOString(),
+        apod,
+        asteroids: asteroidsData,
+        earthEpic
+      };
+
+      nasaCache = {
+        timestamp: now,
+        overview: overviewPayload
+      };
+
+      res.json(overviewPayload);
+    } catch (error) {
+      console.error('Error generating NASA overview:', error);
+      res.json({
+        status: 'offline',
+        timestamp: new Date().toISOString(),
+        apod: DEFAULT_FALLBACK_APOD,
+        asteroids: {
+          count: 5,
+          closest: [],
+          hazardousCount: 0
+        }
+      });
+    }
+  });
+
+  // 12.5 Translate / Explain NASA Space Phenomena in Portuguese using Gemini
+  app.post('/api/nasa/translate-apod', async (req, res) => {
+    const { title, explanation } = req.body as { title?: string; explanation?: string };
+    if (!explanation) {
+      return res.status(400).json({ error: 'Explicação é obrigatória' });
+    }
+
+    const ai = getGeminiClient();
+    if (!ai) {
+      return res.json({
+        translatedTitle: title || '',
+        translatedExplanation: explanation,
+        summary: 'Explicação astronômica fornecida pela NASA.'
+      });
+    }
+
+    try {
+      const response = await ai.models.generateContent({
+        model: 'gemini-3.7-flash',
+        contents: `Você é o astrônomo editorial do portal Mundo Curioso.
+Traduza e adapte este registro oficial da Foto Astronômica do Dia da NASA (APOD) para um português fluente, empolgante e cientificamente rigoroso:
+
+Título original: "${title || ''}"
+Texto original em inglês da NASA:
+"${explanation}"
+
+Retorne estritamente em formato JSON:
+{
+  "translatedTitle": "Título em português envolvente",
+  "translatedExplanation": "Texto traduzido e revisado em português, claro e explicativo",
+  "keyDiscovery": "Uma frase destacando a maior curiosidade científica desse registro",
+  "funFactor": 98
+}`
+      });
+
+      const raw = response.text || '';
+      const cleaned = raw.replace(/^```json\s*/i, '').replace(/\s*```$/i, '').trim();
+      const parsed = JSON.parse(cleaned);
+      res.json(parsed);
+    } catch (err) {
+      console.warn('Gemini NASA translation fallback:', err);
+      res.json({
+        translatedTitle: title || '',
+        translatedExplanation: explanation,
+        keyDiscovery: 'Descoberta cósmica documentada pelos instrumentos da NASA.',
+        funFactor: 95
+      });
+    }
   });
 
   // 13. Platform Statistics

@@ -37,7 +37,7 @@ export const CategoriesGrid: React.FC<CategoriesGridProps> = ({ onSelectCategory
               <ImageWithFallback
                 src={cat.coverImage}
                 alt={cat.name}
-                category={cat.slug}
+                categoryId={cat.id}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/95 via-neutral-950/60 to-neutral-950/20 group-hover:from-neutral-950/90 transition-colors" />

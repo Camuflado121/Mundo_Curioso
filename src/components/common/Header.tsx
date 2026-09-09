@@ -13,7 +13,8 @@ import {
   HelpCircle,
   BookOpen,
   LayoutDashboard,
-  Bell
+  Bell,
+  Rocket
 } from 'lucide-react';
 import { UserStats, Category } from '../../types';
 import { ALL_CATEGORIES } from '../../data/allCuriosities';
@@ -28,6 +29,7 @@ interface HeaderProps {
   onNavigateQuizzes: () => void;
   onNavigateArticles: () => void;
   onNavigateAdmin: () => void;
+  onNavigateNasaObservatory?: () => void;
   onOpenSearch: () => void;
   onOpenProfile: () => void;
   onOpenSubmit: () => void;
@@ -49,6 +51,7 @@ export const Header: React.FC<HeaderProps> = ({
   onNavigateQuizzes,
   onNavigateArticles,
   onNavigateAdmin,
+  onNavigateNasaObservatory,
   onOpenSearch,
   onOpenProfile,
   onOpenSubmit,
@@ -192,6 +195,28 @@ export const Header: React.FC<HeaderProps> = ({
             >
               <BookOpen className="w-3.5 h-3.5 text-blue-500" />
               Especiais
+            </button>
+
+            {/* NASA Space Observatory Live Button */}
+            <button
+              onClick={() => {
+                playPopSound();
+                if (onNavigateNasaObservatory) {
+                  onNavigateNasaObservatory();
+                }
+              }}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
+                currentView === 'nasa-observatory'
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'text-neutral-600 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-900'
+              }`}
+              title="Acessar Observatório Espacial em tempo real com NASA Open Data"
+            >
+              <Rocket className="w-3.5 h-3.5 text-blue-500" />
+              <span>NASA Ao Vivo</span>
+              <span className="px-1.5 py-0.5 text-[8px] font-black uppercase bg-blue-500/20 text-blue-600 dark:text-blue-400 rounded">
+                Live
+              </span>
             </button>
 
             {/* AI Assistant Quick Nav (Exclusive for Administrator) */}
@@ -347,6 +372,26 @@ export const Header: React.FC<HeaderProps> = ({
               className="p-2.5 rounded-xl bg-neutral-100 dark:bg-neutral-900 text-xs font-semibold text-neutral-900 dark:text-white text-left flex items-center gap-1.5 cursor-pointer"
             >
               <BookOpen className="w-3.5 h-3.5 text-blue-500" /> Especiais
+            </button>
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                playPopSound();
+                if (onNavigateNasaObservatory) onNavigateNasaObservatory();
+              }}
+              className={`p-2.5 rounded-xl text-xs font-semibold text-left flex items-center justify-between cursor-pointer ${
+                currentView === 'nasa-observatory'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20'
+              }`}
+            >
+              <div className="flex items-center gap-1.5">
+                <Rocket className="w-3.5 h-3.5 text-blue-500" />
+                <span>Observatório NASA</span>
+              </div>
+              <span className="px-1.5 py-0.5 rounded-md bg-blue-500 text-white font-black text-[9px] uppercase tracking-wider">
+                Ao Vivo
+              </span>
             </button>
             {onOpenNotifications && (
               <button
