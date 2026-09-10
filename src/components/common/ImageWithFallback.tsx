@@ -4,6 +4,7 @@ interface ImageWithFallbackProps extends React.ImgHTMLAttributes<HTMLImageElemen
   src: string;
   alt: string;
   category?: string;
+  categoryId?: string;
   className?: string;
   fallbackSrc?: string;
 }
@@ -34,11 +35,12 @@ export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
   src,
   alt,
   category,
+  categoryId,
   className = '',
   fallbackSrc,
   ...props
 }) => {
-  const defaultFallback = fallbackSrc || getFallbackImageForCategory(category);
+  const defaultFallback = fallbackSrc || getFallbackImageForCategory(category || categoryId);
   const [imgSrc, setImgSrc] = useState<string>(src || defaultFallback);
   const [hasError, setHasError] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);

@@ -19,6 +19,8 @@ export interface Curiosity {
   sourceName?: string;
   isFeatured?: boolean;
   isDaily?: boolean;
+  isLiveNasa?: boolean;
+  liveBadge?: string;
   didYouKnow?: string;
   funFactor?: number; // 1-100
   relatedSlugs?: string[];

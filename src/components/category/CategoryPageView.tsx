@@ -9,8 +9,7 @@ import {
   ArrowRight,
   HelpCircle,
   Play,
-  Sparkles,
-  Rocket
+  Sparkles
 } from 'lucide-react';
 import { Curiosity, Category, Quiz } from '../../types';
 import { ALL_CATEGORIES, ALL_QUIZZES } from '../../data/allCuriosities';
@@ -26,7 +25,6 @@ interface CategoryPageViewProps {
   onOpenShare: (curiosity: Curiosity) => void;
   onToggleFavorite: (slug: string) => void;
   isFavorite: (slug: string) => boolean;
-  onOpenNasaObservatory?: () => void;
 }
 
 export const CategoryPageView: React.FC<CategoryPageViewProps> = ({
@@ -37,8 +35,7 @@ export const CategoryPageView: React.FC<CategoryPageViewProps> = ({
   onSelectQuiz,
   onOpenShare,
   onToggleFavorite,
-  isFavorite,
-  onOpenNasaObservatory
+  isFavorite
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'recentes' | 'populares' | 'curiosas'>('recentes');
@@ -115,36 +112,6 @@ export const CategoryPageView: React.FC<CategoryPageViewProps> = ({
           </div>
         )}
       </div>
-
-      {/* Special NASA Observatory Banner for Space Category */}
-      {category.id === 'espaco' && onOpenNasaObservatory && (
-        <div className="mb-8 p-5 rounded-3xl bg-gradient-to-r from-neutral-950 via-neutral-900 to-blue-950 border border-blue-500/30 text-white shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-2xl bg-blue-600/30 border border-blue-500/40 flex items-center justify-center text-blue-400 shrink-0">
-              <Rocket className="w-6 h-6 animate-pulse" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-bold text-white">Transmissão NASA ao Vivo</span>
-                <span className="px-1.5 py-0.2 text-[9px] font-black uppercase bg-blue-500 text-white rounded">
-                  Live
-                </span>
-              </div>
-              <p className="text-xs text-neutral-300 mt-0.5">
-                Acompanhe a Foto Astronômica do Dia (APOD) e o radar de asteroides da Terra em tempo real via NASA Open API.
-              </p>
-            </div>
-          </div>
-
-          <button
-            onClick={onOpenNasaObservatory}
-            className="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-md shadow-blue-600/30 flex items-center gap-1.5 shrink-0 transition-all"
-          >
-            <span>Acessar Observatório</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
-      )}
 
       {/* Filter and Search Bar inside Category */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">

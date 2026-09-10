@@ -176,12 +176,6 @@ export const Footer: React.FC<FooterProps> = ({
                   Artigos Especiais
                 </button>
               </li>
-              <li>
-                <button onClick={() => onNavigate('nasa')} className="hover:text-blue-400 transition-colors text-left flex items-center gap-1.5 text-blue-300 font-medium">
-                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
-                  Observatório NASA (Ao Vivo)
-                </button>
-              </li>
               {isAdmin && (
                 <li>
                   <button onClick={onOpenSubmit} className="hover:text-amber-400 transition-colors text-left text-amber-400 font-semibold">

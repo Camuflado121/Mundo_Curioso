@@ -38,8 +38,6 @@ import { AdminDashboard } from './components/admin/AdminDashboard';
 import { AboutPage, ContactPage, PrivacyPage } from './components/pages/StaticPages';
 import { NotFoundPage } from './components/pages/NotFoundPage';
 import { AiAssistantModal } from './components/common/AiAssistantModal';
-import { NasaSpaceObservatory } from './components/nasa/NasaSpaceObservatory';
-import { NasaLiveSection } from './components/nasa/NasaLiveSection';
 
 import { playPopSound, playLevelUpFanfare } from './utils/audio';
 import { useAdminAuth } from './hooks/useAdminAuth';
@@ -54,7 +52,6 @@ type ViewMode =
   | 'quiz-play'
   | 'articles-list'
   | 'article-detail'
-  | 'nasa-observatory'
   | 'admin'
   | 'about'
   | 'contact'
@@ -124,9 +121,11 @@ export default function App() {
    * Fetch updated curiosities from backend API with automatic retry,
    * timeout cancellation, diagnostic logging, and safe fallback.
    */
-  const fetchCuriosities = async (maxRetries = 3, retryDelayMs = 800): Promise<Curiosity[]> => {
-    setIsSyncingCuriosities(true);
-    setSyncStatus(prev => ({ ...prev, status: 'syncing' }));
+  const fetchCuriosities = async (maxRetries = 3, retryDelayMs = 800, silent = false): Promise<Curiosity[]> => {
+    if (!silent) {
+      setIsSyncingCuriosities(true);
+      setSyncStatus(prev => ({ ...prev, status: 'syncing' }));
+    }
 
     const startTime = performance.now();
     const endpoint = '/api/curiosidades?limit=100';
@@ -248,9 +247,27 @@ export default function App() {
     return ALL_CURIOSITIES;
   };
 
+  // Real-time automatic background polling loop (every 30 seconds)
   useEffect(() => {
     fetchCuriosities();
+    const interval = setInterval(() => {
+      fetchCuriosities(1, 400, true);
+    }, 30000);
+    return () => clearInterval(interval);
   }, []);
+
+  const handleRefreshFeed = async () => {
+    try {
+      setIsSyncingCuriosities(true);
+      await fetch('/api/curiosidades/live-sync');
+      await fetchCuriosities(2, 400, false);
+    } catch (e) {
+      console.warn('Manual feed refresh error:', e);
+      await fetchCuriosities(1, 300, false);
+    } finally {
+      setIsSyncingCuriosities(false);
+    }
+  };
 
   // Sync dark theme class to html document
   useEffect(() => {
@@ -471,21 +488,15 @@ export default function App() {
             {/* 14 Categories Interactive Bento Grid */}
             <CategoriesGrid onSelectCategory={handleSelectCategory} />
 
-            {/* Main Featured & Filtered Curiosities Grid */}
+            {/* Main Featured & Filtered Curiosities Grid with Real-time NASA Integration */}
             <FeaturedGrid
               curiosities={curiosities}
               onSelectCuriosity={handleSelectCuriosity}
               onOpenShare={item => setShareCuriosity(item)}
               onToggleFavorite={toggleFavorite}
               isFavorite={isFavorite}
-            />
-
-            {/* NASA Live Space Observatory Telemetry & APOD Card */}
-            <NasaLiveSection
-              onOpenObservatory={() => {
-                setCurrentView('nasa-observatory');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
+              onRefreshFeed={handleRefreshFeed}
+              isSyncing={isSyncingCuriosities}
             />
 
             {/* Gamified Quizzes Invitation Section */}
@@ -535,10 +546,6 @@ export default function App() {
             onOpenShare={item => setShareCuriosity(item)}
             onToggleFavorite={toggleFavorite}
             isFavorite={isFavorite}
-            onOpenNasaObservatory={() => {
-              setCurrentView('nasa-observatory');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
           />
         )}
 
@@ -580,14 +587,6 @@ export default function App() {
             adminName={adminUser?.name}
             isReaderMode={isReaderMode}
             onToggleReaderMode={() => setIsReaderMode(prev => !prev)}
-          />
-        )}
-
-        {currentView === 'nasa-observatory' && (
-          <NasaSpaceObservatory
-            onBack={navigateToHome}
-            onSelectCuriosity={handleSelectCuriosity}
-            spaceCuriosities={curiosities.filter(c => c.categoryId === 'espaco')}
           />
         )}
 
@@ -698,9 +697,8 @@ export default function App() {
             } else if (view === 'artigos') {
               setCurrentView('articles-list');
               window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else if (view === 'nasa' || view === 'observatorio') {
-              setCurrentView('nasa-observatory');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else if (view === 'nasa' || view === 'observatorio' || view === 'espaco') {
+              handleSelectCategory('espaco');
             } else if (view === 'admin') {
               if (isAdmin) {
                 setCurrentView('admin');
