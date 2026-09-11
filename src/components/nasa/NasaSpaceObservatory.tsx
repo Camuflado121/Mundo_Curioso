@@ -81,7 +81,7 @@ export const NasaSpaceObservatory: React.FC<NasaSpaceObservatoryProps> = ({
         setEarthEpic(data.earthEpic);
       }
     } catch (err) {
-      console.error('Error fetching NASA overview:', err);
+      console.warn('Notice: Could not fetch NASA live overview, maintaining current telemetry:', err);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -104,7 +104,7 @@ export const NasaSpaceObservatory: React.FC<NasaSpaceObservatoryProps> = ({
       setCurrentApod(data);
       setSelectedDate(data.date);
     } catch (err) {
-      console.error('Error fetching APOD by date:', err);
+      console.warn('Notice: Could not fetch APOD by date:', err);
     } finally {
       setLoading(false);
     }
@@ -125,7 +125,7 @@ export const NasaSpaceObservatory: React.FC<NasaSpaceObservatoryProps> = ({
         setSelectedDate(item.date);
       }
     } catch (err) {
-      console.error('Error fetching random APOD:', err);
+      console.warn('Notice: Could not fetch random APOD:', err);
     } finally {
       setLoadingRandomApod(false);
     }
@@ -149,7 +149,7 @@ export const NasaSpaceObservatory: React.FC<NasaSpaceObservatoryProps> = ({
       const data = await res.json();
       setApodTranslation(data);
     } catch (err) {
-      console.error('Error translating APOD:', err);
+      console.warn('Notice: Could not translate APOD:', err);
     } finally {
       setTranslating(false);
     }

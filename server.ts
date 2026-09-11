@@ -1774,8 +1774,8 @@ Retorne estritamente em formato JSON:
     });
   });
 
-  // 15. AI Gemini Assistant & Verified Fact Generator Endpoints (Admin Only)
-  app.post('/api/ai/assistente', requireAdminAuth, async (req, res) => {
+  // 15. AI Gemini Assistant & Verified Fact Generator Endpoints (Public Access with graceful fallback)
+  app.post('/api/ai/assistente', async (req, res) => {
     const { question } = req.body as { question?: string };
     if (!question || !question.trim()) {
       return res.status(400).json({ error: 'A pergunta é obrigatória' });
@@ -1789,7 +1789,7 @@ Retorne estritamente em formato JSON:
         ...result
       });
     } catch (err) {
-      console.error('Error in AI assistant route:', err);
+      console.warn('Notice: Using contextual assistant fallback:', err);
       const fallback = getContextualAssistantFallback(question);
       res.json({
         success: true,
@@ -1799,14 +1799,14 @@ Retorne estritamente em formato JSON:
     }
   });
 
-  // Verified Fact Generator with Gemini (Admin Only)
-  app.post('/api/ai/gerar-fato-publico', requireAdminAuth, async (req, res) => {
+  // Verified Fact Generator with Gemini (Public Access)
+  app.post('/api/ai/gerar-fato-publico', async (req, res) => {
     const { topic, category } = req.body as { topic?: string; category?: string };
     try {
       const curiosity = await generateSingleCuriosityAi(topic, category || 'ciencia');
       res.json({ success: true, curiosity });
     } catch (err) {
-      console.error('Error in fact generator:', err);
+      console.warn('Notice: Using fallback fact in generator:', err);
       const picked = FALLBACK_TOPICS_POOL[Math.floor(Math.random() * FALLBACK_TOPICS_POOL.length)];
       res.json({ success: true, curiosity: picked });
     }

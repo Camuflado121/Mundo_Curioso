@@ -129,24 +129,29 @@ export default function App() {
 
     const startTime = performance.now();
     const endpoint = '/api/curiosidades?limit=100';
+    const effectiveRetries = Math.max(maxRetries, silent ? 2 : 3);
 
-    console.groupCollapsed(
-      `%c[Mundo Curioso API] 📡 Sincronizando curiosidades com o servidor (${new Date().toLocaleTimeString('pt-BR')})`,
-      'color: #d97706; font-weight: bold;'
-    );
-    console.info(`[API Diagnostics] Endpoint alvo: ${endpoint}`);
-    console.info(`[API Diagnostics] Tentativas configuradas: ${maxRetries}`);
-    console.info(`[API Diagnostics] Itens em cache local: ${curiosities.length}`);
+    if (!silent) {
+      console.groupCollapsed(
+        `%c[Mundo Curioso API] 📡 Sincronizando curiosidades com o servidor (${new Date().toLocaleTimeString('pt-BR')})`,
+        'color: #d97706; font-weight: bold;'
+      );
+      console.info(`[API Diagnostics] Endpoint alvo: ${endpoint}`);
+      console.info(`[API Diagnostics] Tentativas configuradas: ${effectiveRetries}`);
+      console.info(`[API Diagnostics] Itens em cache local: ${curiosities.length}`);
+    }
 
     let lastError: unknown = null;
 
-    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    for (let attempt = 1; attempt <= effectiveRetries; attempt++) {
       const attemptStart = performance.now();
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 7000); // 7s timeout safeguard
 
       try {
-        console.log(`[API Diagnostics] Iniciando tentativa ${attempt}/${maxRetries}...`);
+        if (!silent) {
+          console.log(`[API Diagnostics] Iniciando tentativa ${attempt}/${effectiveRetries}...`);
+        }
 
         const res = await fetch(endpoint, {
           signal: controller.signal,
@@ -175,17 +180,19 @@ export default function App() {
         }
 
         const totalLatency = Math.round(performance.now() - startTime);
-        console.info(
-          `%c[API Diagnostics] ✅ Sincronização concluída com sucesso na tentativa ${attempt}!`,
-          'color: #059669; font-weight: bold;',
-          {
-            itensRecebidos: items.length,
-            latenciaTentativa: `${attemptLatency}ms`,
-            tempoTotal: `${totalLatency}ms`,
-            status: res.status
-          }
-        );
-        console.groupEnd();
+        if (!silent) {
+          console.info(
+            `%c[API Diagnostics] ✅ Sincronização concluída com sucesso na tentativa ${attempt}!`,
+            'color: #059669; font-weight: bold;',
+            {
+              itensRecebidos: items.length,
+              latenciaTentativa: `${attemptLatency}ms`,
+              tempoTotal: `${totalLatency}ms`,
+              status: res.status
+            }
+          );
+          console.groupEnd();
+        }
 
         setCuriosities(items);
         setIsSyncingCuriosities(false);
@@ -200,39 +207,44 @@ export default function App() {
         lastError = err;
         const attemptLatency = Math.round(performance.now() - attemptStart);
 
-        const isAbort = err.name === 'AbortError';
+        const isAbort = err?.name === 'AbortError';
         const errorMsg = isAbort
           ? 'Tempo limite de conexão excedido (Timeout de 7s).'
-          : (err.message || 'Falha de rede ou conexão recusada.');
+          : (err?.message || 'Falha de rede ou conexão temporariamente indisponível.');
 
-        console.warn(
-          `%c[API Diagnostics] ⚠️ Falha na tentativa ${attempt}/${maxRetries} (${attemptLatency}ms): ${errorMsg}`,
-          'color: #dc2626; font-weight: bold;',
-          err
-        );
+        if (!silent) {
+          console.warn(
+            `%c[API Diagnostics] ⚠️ Falha na tentativa ${attempt}/${effectiveRetries} (${attemptLatency}ms): ${errorMsg}`,
+            'color: #d97706; font-weight: bold;'
+          );
+        }
 
-        if (attempt < maxRetries) {
+        if (attempt < effectiveRetries) {
           const delay = retryDelayMs * Math.pow(1.5, attempt - 1);
-          console.info(`[API Diagnostics] Aguardando ${delay}ms antes da próxima tentativa...`);
+          if (!silent) {
+            console.info(`[API Diagnostics] Aguardando ${delay}ms antes da próxima tentativa...`);
+          }
           await new Promise(resolve => setTimeout(resolve, delay));
         }
       }
     }
 
-    // If all attempts failed, log diagnostic summary and engage verified local fallback
+    // If all attempts failed, log graceful diagnostic summary and engage verified local fallback
     const totalDuration = Math.round(performance.now() - startTime);
     const failureReason = lastError instanceof Error ? lastError.message : String(lastError);
 
-    console.error(
-      `%c[API Diagnostics] ❌ Não foi possível sincronizar com o servidor após ${maxRetries} tentativas (${totalDuration}ms).`,
-      'color: #dc2626; font-weight: bold;',
-      {
-        motivoFalha: failureReason,
-        resolucao: 'Fallback local engajado com 100% de disponibilidade dos dados verificados.',
-        totalItensLocais: ALL_CURIOSITIES.length
-      }
-    );
-    console.groupEnd();
+    if (!silent) {
+      console.warn(
+        `%c[API Diagnostics] ℹ️ Conexão remota em fallback após ${effectiveRetries} tentativas (${totalDuration}ms). Base local engajada.`,
+        'color: #d97706; font-weight: bold;',
+        {
+          motivo: failureReason,
+          resolucao: 'Fallback local engajado com 100% de disponibilidade dos dados verificados.',
+          totalItensLocais: ALL_CURIOSITIES.length
+        }
+      );
+      console.groupEnd();
+    }
 
     // Safe fallback to locally verified dataset
     setCuriosities(prev => (prev && prev.length > 0 ? prev : ALL_CURIOSITIES));
@@ -251,7 +263,7 @@ export default function App() {
   useEffect(() => {
     fetchCuriosities();
     const interval = setInterval(() => {
-      fetchCuriosities(1, 400, true);
+      fetchCuriosities(2, 600, true);
     }, 30000);
     return () => clearInterval(interval);
   }, []);
@@ -260,10 +272,10 @@ export default function App() {
     try {
       setIsSyncingCuriosities(true);
       await fetch('/api/curiosidades/live-sync');
-      await fetchCuriosities(2, 400, false);
+      await fetchCuriosities(3, 500, false);
     } catch (e) {
       console.warn('Manual feed refresh error:', e);
-      await fetchCuriosities(1, 300, false);
+      await fetchCuriosities(2, 400, false);
     } finally {
       setIsSyncingCuriosities(false);
     }
